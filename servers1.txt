@@ -4,4 +4,4 @@
 # Количество: 1
 # subscription-userinfo: upload=0; download=0; total=67108864; expire=0
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpFZ2JBamRKeW9XS2NYclZGWFVZd3doc1ZxM3Eyc1FUMg%3D%3D@138.124.67.26:1080#ouVPN%20%F0%9F%87%B3%F0%9F%87%B1%20SS%20%5BFREE%5D
+vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@ru.superbuba.top:443?security=reality&encryption=none&pbk=sbvKAdRy_0h33iRxgGwHAD1HC62WGwlkWwj0S5ptJEU&headerType=none&fp=chrome&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=ru.superbuba.top&sid=9c2378562188c3cb#RU%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN%20%7C%20YouTube
