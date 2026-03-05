@@ -21,7 +21,6 @@
     <a href="https://github.com/oulan1/ouVPN/commits/main">
       <img src="https://img.shields.io/github/last-commit/oulan1/ouVPN?style=flat-square&color=green&logo=github" alt="Last Commit">
     </a>
-    <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Foulan1%2FouVPN&count_bg=%2379C83D&title_bg=%23555555&title=просмотры&edge_flat=true" alt="Views">
   </p>
 </div>
 
