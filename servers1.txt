@@ -2,8 +2,6 @@
 # profile-update-interval: 12
 # Date/Time: 2026-03-04 / 21:22 (Moscow)
 # Количество: 1
-# subscription-userinfo: upload=0; download=0; total=67108864; expire=0
 # support-url: https://t.me/oulanGift
-# hide-settings: true
 
-vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@ru.superbuba.top:443?security=reality&encryption=none&pbk=sbvKAdRy_0h33iRxgGwHAD1HC62WGwlkWwj0S5ptJEU&headerType=none&fp=chrome&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=ru.superbuba.top&sid=9c2378562188c3cb#RU%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN%20%7C%20YouTube
+vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@ru.superbuba.top:443?security=reality&encryption=none&pbk=sbvKAdRy_0h33iRxgGwHAD1HC62WGwlkWwj0S5ptJEU&headerType=none&fp=chrome&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=ru.superbuba.top&sid=9c2378562188c3cb#RU%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN%20%7C%20YouTube?serverDescription=RmFzdCBIaWdoIFNwZWVkIFZQTiA=
