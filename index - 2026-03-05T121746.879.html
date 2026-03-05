@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ouVPN - Подключение</title>
+    <link rel="icon" href="https://i.ibb.co/4ZggD9Jz/30650.jpg">
+    <style>
+        :root {
+            --bg-color: #0b090f;
+            --card-bg: #15121c;
+            --primary: #8b5cf6;
+            --primary-hover: #a78bfa;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #2e224d;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 3rem 1rem;
+            background-image: radial-gradient(circle at top center, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo {
+            width: 88px;
+            height: 88px;
+            border-radius: 22px;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            background: linear-gradient(to right, #c4b5fd, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .instruction-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--text-main);
+        }
+
+        .step {
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-number {
+            background-color: rgba(139, 92, 246, 0.15);
+            color: #c4b5fd;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 1.15rem;
+        }
+
+        .step-content {
+            padding-left: 3rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-top: 1.25rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 1.5rem;
+            }
+            .step-content {
+                padding-left: 0;
+                margin-top: 1rem;
+            }
+            .step-number {
+                margin-right: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://i.ibb.co/4ZggD9Jz/30650.jpg" alt="ouVPN Logo" class="logo">
+            <h1 class="title">ouVPN</h1>
+        </div>
+
+        <div class="card">
+            <h2 class="instruction-title">Инструкция по подключению</h2>
+            
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Скачать Happ</h3>
+                </div>
+                <div class="step-content">
+                    <p>Для работы VPN необходимо установить приложение Happ на ваше устройство.</p>
+                    <a href="https://www.happ.su/main/ru" target="_blank" class="btn btn-secondary">Скачать приложение</a>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Добавление подписки</h3>
+                </div>
+                <div class="step-content">
+                    <p>Нажмите кнопку ниже — приложение откроется, и подписка добавится автоматически.</p>
+                    <a href="happ://add/https://raw.githubusercontent.com/oulan1/ouVPN/refs/heads/main/premium.txt" class="btn btn-primary">Добавить подписку</a>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Подключение и использование</h3>
+                </div>
+                <div class="step-content">
+                    <p>В главном разделе нажмите большую кнопку включения в центре для подключения к VPN. Не забудьте выбрать сервер в списке серверов. При необходимости выберите другой сервер из списка серверов.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
