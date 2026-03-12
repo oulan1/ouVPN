@@ -1,6 +1,6 @@
 # profile-title: 👑 𝗼𝘂𝗩𝗣𝗡
 # profile-update-interval: 3
-# Date/Time: 2026-03-10 / 21:35 (Moscow)
+# Date/Time: 2026-03-12 / 8:06 (Moscow)
 # Количество: 10
 # support-url: https://t.me/oulanGift
 # announce: Перестало работать - нажмите на 🔄️
@@ -10,8 +10,8 @@ vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@ds.superbuba.top:443?security=reali
 vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@ds.superbuba.top:443?security=reality&encryption=none&pbk=sbvKAdRy_0h33iRxgGwHAD1HC62WGwlkWwj0S5ptJEU&headerType=none&fp=chrome&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=ds.superbuba.top&sid=9c2378562188c3cb#RU%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN%20%7C%20Supercell
 vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@de.superbuba.top:443?security=reality&encryption=none&pbk=wgoLhL4pRP0y6fu6He4qW_ElohCM_ANWJF3HEoUhNz4&headerType=none&fp=chrome&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=de.superbuba.top&sid=9c2378562188c3cb#DE%20%F0%9F%87%A9%F0%9F%87%AA%20ouVPN
 vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@netherlands.superbuba.top:443?security=reality&encryption=none&pbk=AYQOZFxjvHN-RIzKYEibwFiFsp03cdlWGdCmyFfuNVc&headerType=none&fp=random&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=netherlands.superbuba.top&sid=4fa44664f6a566d3#NL%20%F0%9F%87%B3%F0%9F%87%B1%20ouVPN
-vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@195.3.223.110:443?security=reality&encryption=none&pbk=AYQOZFxjvHN-RIzKYEibwFiFsp03cdlWGdCmyFfuNVc&headerType=none&fp=random&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=poland.superbuba.top&sid=4fa44664f6a566d3#PL%20%F0%9F%87%B5%F0%9F%87%B1%20ouVPN
-vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@84.32.51.202:443?security=reality&encryption=none&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&headerType=none&fp=random&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=lt.superbuba.top&sid=4fa44664f6a566d3#LT%20%F0%9F%87%B1%F0%9F%87%B9%20ouVPN%20%F0%9F%86%95
+vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@84.32.50.19:443?security=reality&encryption=none&pbk=G2U8_BvRAgcOw0sX8u_0yYdVAlD8CWLSi-uYjvH07hw&headerType=none&fp=random&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=sweden.superbuba.top&sid=4fa44664f6a566d3#SE%20%F0%9F%87%B8%F0%9F%87%AA%20ouVPN%20%F0%9F%86%95
+vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@5.199.171.51:443?security=reality&encryption=none&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&headerType=none&fp=random&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=lt.superbuba.top&sid=4fa44664f6a566d3#LT%20%F0%9F%87%B1%F0%9F%87%B9%20ouVPN%20%F0%9F%86%95
 vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@178.154.223.113:443?security=reality&encryption=none&pbk=66kZLshj9fxAIQA7NsABohNwgiOcY71enc6as_Frqw0&headerType=none&fp=random&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=smartcaptcha.yandexcloud.net&sid=3c1523da43287ec4#%F0%9F%87%AA%F0%9F%87%BA%20WHITE%20%F0%9F%A5%83%20ouVPN%20%7C%20%231
 vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@178.154.220.238:443?security=reality&encryption=none&pbk=66kZLshj9fxAIQA7NsABohNwgiOcY71enc6as_Frqw0&headerType=none&fp=random&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=ads.x5.ru&sid=3c1523da43287ec4#%F0%9F%87%AA%F0%9F%87%BA%20WHITE%20%F0%9F%A5%83%20ouVPN%20%7C%20%232
 vless://a1eb33b6-f946-48ca-8a37-7bc28f8cd1cc@81.superbuba.top:443?security=reality&encryption=none&pbk=_clqzJ8ZkSG71dSLu5KfRB9NJf63uBbdlDFZ4hp1uBE&headerType=none&fp=random&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=m.vk.ru&sid=3d9bfa9202efd228#%F0%9F%87%AA%F0%9F%87%BA%20WHITE%20%F0%9F%A5%83%20ouVPN%20%7C%20%233
