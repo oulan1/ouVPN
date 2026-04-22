@@ -7,7 +7,171 @@
 
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@ru.superbuba.top:443?security=reality&encryption=none&pbk=sbvKAdRy_0h33iRxgGwHAD1HC62WGwlkWwj0S5ptJEU&headerType=none&fp=chrome&spx=%2F&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=ru.superbuba.top&sid=9c2378562188c3cb#RU+%F0%9F%87%B7%F0%9F%87%BA+ouVPN+%7C+YouTube
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@ds.superbuba.top:443?security=reality&encryption=none&pbk=sbvKAdRy_0h33iRxgGwHAD1HC62WGwlkWwj0S5ptJEU&headerType=none&fp=chrome&spx=%2F&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=ds.superbuba.top&sid=9c2378562188c3cb#RU+%F0%9F%87%B7%F0%9F%87%BA+ouVPN+%7C+Discord
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@185.191.117.131:443?security=reality&encryption=none&pbk=rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs&headerType=none&fp=random&spx=%2F&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=germany.superbuba.top&sid=4fa44664f6a566d3#DE+%F0%9F%87%A9%F0%9F%87%AA+ouVPN?serverDescription=4pqh77iP0JLRi9GB0L7QutCw0Y8g0YHQutC+0YDQvtGB0YLRjA==
+{
+  "dns": {
+    "tag": "dns-in",
+    "servers": [
+      "8.8.8.8",
+      "9.9.9.9"
+    ],
+    "queryStrategy": "UseIPv4"
+  },
+  "log": {
+    "loglevel": "warning"
+  },
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "protocol": [
+          "bittorrent"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "domain:mtalk.google.com",
+          "domain:push.apple.com",
+          "domain:api.push.apple.com",
+          "domain:push-apple.com.akadns.net",
+          "domain:*-courier.push.apple.com",
+          "domain:mangabuff.ru"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "ip": [
+          "17.0.0.0/8"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "domain:2ip.ru",
+          "domain:2ip.io",
+          "habr.com",
+          "4pda.to",
+          "4pda.ru",
+          "kemono.su",
+          "jut.su",
+          "kara.su",
+          "theins.ru",
+          "tvrain.ru",
+          "echo.msk.ru",
+          "the-village.ru",
+          "snob.ru",
+          "novayagazeta.ru",
+          "moscowtimes.ru"
+        ],
+        "outboundTag": "proxy"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "geosite:private",
+          "geosite:category-ru",
+          "geosite:category-gov-ru"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "ip": [
+          "geoip:ru",
+          "geoip:private"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      }
+    ],
+    "domainStrategy": "IPIfNonMatch"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "settings": {
+        "udp": true,
+        "auth": "noauth"
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    },
+    {
+      "tag": "http",
+      "port": 10809,
+      "listen": "127.0.0.1",
+      "protocol": "http",
+      "settings": {
+        "allowTransparent": false
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "88.216.36.98",
+            "port": 443,
+            "users": [
+              {
+                "id": "5be800a1-742f-4c1a-a03f-b0dce2bc04b1",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "germany.superbuba.top",
+          "show": false,
+          "publicKey": "rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs",
+          "shortId": "4fa44664f6a566d3",
+          "spiderX": "/",
+          "fingerprint": "random"
+        }
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom"
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole"
+    }
+  ],
+  "remarks": "🇩🇪 Германия",
+  "meta": {
+    "serverDescription": "⚡️Высокая скорость"
+  }
+}
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@193.178.226.239:443?security=reality&encryption=none&pbk=Xae-a3PEieFUI76gdMPqk_cFdJFkQr1PAKHsyYbzFRE&headerType=none&fp=qq&spx=%2F&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=dl.google.com&sid=a25c781f24d4209f#NL+%E2%84%961+%F0%9F%87%B3%F0%9F%87%B1+ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@193.178.226.213:443?security=reality&encryption=none&pbk=z37XIezsPyfMgmdXyFd9qT4C4maDAs1OcRt-wfyrXVo&headerType=none&fp=chrome&spx=%2F&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=neth2.superbuba.top&sid=9c2378562188c3cb#NL+%E2%84%962+%F0%9F%87%B3%F0%9F%87%B1+ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@5.199.171.51:443?security=reality&encryption=none&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&headerType=none&fp=random&spx=%2F&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=lt.superbuba.top&sid=4fa44664f6a566d3#LT+%F0%9F%87%B1%F0%9F%87%B9+ouVPN
