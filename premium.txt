@@ -2,13 +2,12 @@
 # profile-update-interval: 3
 #subscription-userinfo: download=214748364800; total=0;
 # Date/Time: 2026-04-28 / 15:53 (Moscow)
-# Количество: 31
+# Количество: 30
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
 # announce: Перестало работать - нажмите на 🔄️
 
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@ru.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=ru.superbuba.top&fp=chrome&pbk=sbvKAdRy_0h33iRxgGwHAD1HC62WGwlkWwj0S5ptJEU&sid=9c2378562188c3cb&spx=%2F&type=tcp#RU%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN%20%7C%20YouTube
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@ds.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=ds.superbuba.top&fp=chrome&pbk=sbvKAdRy_0h33iRxgGwHAD1HC62WGwlkWwj0S5ptJEU&sid=9c2378562188c3cb&spx=%2F&type=tcp#RU%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN%20%7C%20Discord
+vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@borrne.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=borrne.burladuck.com&fp=chrome&pbk=vstCCcuX4I5VlvSjpAgIXbqJ_pn2gBRbR1pb_pjWrFU&sid=9c2378562188c3cb&spx=%2F&type=tcp#RU%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN%20%7C%20YT%20%26%20DS
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@germany.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=germany.superbuba.top&fp=random&pbk=rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs&sid=4fa44664f6a566d3&spx=%2F&type=tcp#DE%20%F0%9F%87%A9%F0%9F%87%AA%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@nl.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=nl.superbuba.top&fp=chrome&pbk=z37XIezsPyfMgmdXyFd9qT4C4maDAs1OcRt-wfyrXVo&sid=9c2378562188c3cb&spx=%2F&type=tcp#NL%20%F0%9F%87%B3%F0%9F%87%B1%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@lt.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=lt.superbuba.top&fp=random&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&sid=4fa44664f6a566d3&spx=%2F&type=tcp#LT%20%F0%9F%87%B1%F0%9F%87%B9%20ouVPN
