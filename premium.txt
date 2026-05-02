@@ -1,7 +1,7 @@
 # profile-title: 👑 𝗼𝘂𝗩𝗣𝗡
 # profile-update-interval: 3
-#subscription-userinfo: download=214748364800; total=0;
-# Date/Time: 2026-04-28 / 15:53 (Moscow)
+#subscription-userinfo: download=322122547200; total=0;
+# Date/Time: 2026-05-02 / 11:17 (Moscow)
 # Количество: 30
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
