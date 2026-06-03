@@ -2,7 +2,7 @@
 # profile-update-interval: 3
 #subscription-userinfo: download=2199023255552; total=0;
 # Date/Time: 2026-05-22 / 22:40 (Moscow)
-# Количество: 44
+# Количество: 45
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
 # announce: Есть другие VLESS сервера? Пиши @oulan1
@@ -10,6 +10,7 @@
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@borrne.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=borrne.burladuck.com&fp=chrome&pbk=vstCCcuX4I5VlvSjpAgIXbqJ_pn2gBRbR1pb_pjWrFU&sid=9c2378562188c3cb&spx=%2F&type=tcp#RU%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN%20%7C%20YT%20%26%20DS
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@germany.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=germany.superbuba.top&fp=random&pbk=rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs&sid=4fa44664f6a566d3&spx=%2F&type=tcp#DE%20%F0%9F%87%A9%F0%9F%87%AA%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@nl.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=nl.superbuba.top&fp=chrome&pbk=z37XIezsPyfMgmdXyFd9qT4C4maDAs1OcRt-wfyrXVo&sid=9c2378562188c3cb&spx=%2F&type=tcp#NL%20%F0%9F%87%B3%F0%9F%87%B1%20ouVPN
+vless://1b103551-a9f2-48e9-94be-22baa96153fa@31.76.76.193:47458?security=reality&encryption=none&pbk=uhXdU0zI_NcmPaKniatuWlkTjPGefiFm93hTvTswBQ8&headerType=none&fp=edge&spx=%2FXmzCGBMlqIdF3Y1&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=www.nvidia.com&sid=d4d2#NL+%F0%9F%87%B3%F0%9F%87%B1+ouVPN+%7C+%D0%BE%D1%82+%40oulan1
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@jp.superbuba.top:443?mode=gun&security=reality&encryption=none&authority=&pbk=IBd0fFI3UGxCVcwB7HjnYgCAjDd5hczwR742wsY1Akw&fp=chrome&spx=%2F&allowinsecure=0&type=grpc&serviceName=&sni=jp.superbuba.top&sid=9c2378562188c3cb#JP+%F0%9F%87%AF%F0%9F%87%B5+ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@lt.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=lt.superbuba.top&fp=random&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&sid=4fa44664f6a566d3&spx=%2F&type=tcp#LT%20%F0%9F%87%B1%F0%9F%87%B9%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@sweden.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=sweden.superbuba.top&fp=random&pbk=G2U8_BvRAgcOw0sX8u_0yYdVAlD8CWLSi-uYjvH07hw&sid=4fa44664f6a566d3&spx=%2F&type=tcp#SE%20%F0%9F%87%B8%F0%9F%87%AA%20ouVPN
