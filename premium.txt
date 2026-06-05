@@ -1,18 +1,19 @@
 # profile-title: 👑 𝗼𝘂𝗩𝗣𝗡
 # profile-update-interval: 3
-#subscription-userinfo: download=2199023255552; total=0;
-# Date/Time: 2026-05-22 / 22:40 (Moscow)
-# Количество: 45
+#subscription-userinfo: download=3298534883328; total=0;
+# Date/Time: 2026-06-05 / 16:42 (Moscow)
+# Количество: 42
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
 # announce: Есть другие VLESS сервера? Пиши @oulan1
 
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@borrne.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=borrne.burladuck.com&fp=chrome&pbk=vstCCcuX4I5VlvSjpAgIXbqJ_pn2gBRbR1pb_pjWrFU&sid=9c2378562188c3cb&spx=%2F&type=tcp#RU%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN%20%7C%20YT%20%26%20DS
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@germany.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=germany.superbuba.top&fp=random&pbk=rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs&sid=4fa44664f6a566d3&spx=%2F&type=tcp#DE%20%F0%9F%87%A9%F0%9F%87%AA%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@nl.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=nl.superbuba.top&fp=chrome&pbk=z37XIezsPyfMgmdXyFd9qT4C4maDAs1OcRt-wfyrXVo&sid=9c2378562188c3cb&spx=%2F&type=tcp#NL%20%F0%9F%87%B3%F0%9F%87%B1%20ouVPN
+vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@nl.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=nl.superbuba.top&fp=firefox&pbk=z37XIezsPyfMgmdXyFd9qT4C4maDAs1OcRt-wfyrXVo&sid=9c2378562188c3cb&spx=%2F&type=tcp#🇳🇱%20NL%20ouVPN
 vless://1b103551-a9f2-48e9-94be-22baa96153fa@31.76.76.193:47458?security=reality&encryption=none&pbk=uhXdU0zI_NcmPaKniatuWlkTjPGefiFm93hTvTswBQ8&headerType=none&fp=edge&spx=%2FXmzCGBMlqIdF3Y1&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=www.nvidia.com&sid=d4d2#NL+%F0%9F%87%B3%F0%9F%87%B1+ouVPN+%7C+%D0%BE%D1%82+%40oulan1
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@jp.superbuba.top:443?mode=gun&security=reality&encryption=none&authority=&pbk=IBd0fFI3UGxCVcwB7HjnYgCAjDd5hczwR742wsY1Akw&fp=chrome&spx=%2F&allowinsecure=0&type=grpc&serviceName=&sni=jp.superbuba.top&sid=9c2378562188c3cb#JP+%F0%9F%87%AF%F0%9F%87%B5+ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@lt.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=lt.superbuba.top&fp=random&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&sid=4fa44664f6a566d3&spx=%2F&type=tcp#LT%20%F0%9F%87%B1%F0%9F%87%B9%20ouVPN
+vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@it.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=it.superbuba.top&fp=random&pbk=G2U8_BvRAgcOw0sX8u_0yYdVAlD8CWLSi-uYjvH07hw&sid=4fa44664f6a566d3&spx=%2F&type=tcp#🇮🇹%20IT%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@sweden.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=sweden.superbuba.top&fp=random&pbk=G2U8_BvRAgcOw0sX8u_0yYdVAlD8CWLSi-uYjvH07hw&sid=4fa44664f6a566d3&spx=%2F&type=tcp#SE%20%F0%9F%87%B8%F0%9F%87%AA%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@fr.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=fr.superbuba.top&fp=random&pbk=AYQOZFxjvHN-RIzKYEibwFiFsp03cdlWGdCmyFfuNVc&sid=4fa44664f6a566d3&spx=%2F&type=tcp#FR%20%F0%9F%87%AB%F0%9F%87%B7%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@gr.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=gr.superbuba.top&fp=random&pbk=fGIdJW-PvODj90XH0Wz_77RHMXsXtGFwGqVO3ymGEw4&sid=4fa44664f6a566d3&spx=%2F&type=tcp#GR%20%F0%9F%87%AC%F0%9F%87%B7%20ouVPN
@@ -39,8 +40,3 @@ vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@vkus.burladuck.com:443?encryption=n
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@pokich.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=smartcaptcha.yandexcloud.net&fp=random&pbk=vyzsQLMRAuySJxAg0sNHXzgJuT8PGRakCay3rzUbT3k&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%236-1%20%F0%9F%A5%83%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@pokich.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=api-maps.yandex.ru&fp=random&pbk=k0LJeb3MlZamIeOM2RC6zvI2dOdoc-Z5N2BAMOwOwzk&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%236-2%20%F0%9F%A5%83%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@pokich.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=ads.x5.ru&fp=random&pbk=I_mMGeQ8r529dq2LjFUzv0nb74zuux2zGWT2RfKuE14&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%236-3%20%F0%9F%A5%83%20ouVPN
-
-vless://e6216d49-cb64-49b6-afef-1fa48cd7e9e5@85.93.1.31:8443?security=reality&encryption=none&pbk=-tePObR3oZwGAUOb5kqTYkNWl6rtUKl0RFuzuu06wgw&headerType=none&fp=qq&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=tradingview.com&sid=50#%F0%9F%87%B8%F0%9F%87%B4+%E2%86%93+%D0%A2%D0%95%D0%A1%D0%A2%D0%9E%D0%92%D0%AB%D0%95+%D0%A1%D0%95%D0%A0%D0%92%D0%95%D0%A0%D0%90+%E2%86%93
-vless://6d916d55-fead-4ff3-a3a9-83e175ea8ad7@ru113.mechvpn.online:443?security=tls&encryption=none&alpn=h3,h2,http/1.1&headerType=none&fp=chrome&allowinsecure=0&type=tcp&flow=xtls-rprx-vision#GB+%F0%9F%87%AC%F0%9F%87%A7+ouVPN+%5BTEST%5D
-vless://f9d8aa07-589f-4da0-9cb0-fd8f2f0e4fa8@64.188.93.13:443?security=reality&encryption=none&pbk=ZHEMPjSWslk6_qD2JNQzd5enUPz8nY9mYRRuM6NkZmU&headerType=none&fp=chrome&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=www.deepl.com&sid=0123456789abcdef#FI+%F0%9F%87%AB%F0%9F%87%AE+ouVPN+%5BTEST%5D
-vless://8ef19221-6d5e-4bce-baa1-7c043eae3309@62.60.217.95:443?security=reality&encryption=none&pbk=6eN2NciEaZis5J4muRRqpfLQ1OglI3A8lNSTmAGo6Do&headerType=none&fp=chrome&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=stats.vk-portal.net&sid=3c6fc84d#IR+%F0%9F%87%AE%F0%9F%87%B7+ouVPN+%5BTEST%5D
