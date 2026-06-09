@@ -1,8 +1,8 @@
 # profile-title: 👑 𝗼𝘂𝗩𝗣𝗡
 # profile-update-interval: 3
 #subscription-userinfo: download=3298534883328; total=0;
-# Date/Time: 2026-06-05 / 16:42 (Moscow)
-# Количество: 42
+# Date/Time: 2026-06-10 / 23:06 (Moscow)
+# Количество: 33
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
 # announce: Есть другие VLESS сервера? Пиши @oulan1
@@ -31,12 +31,3 @@ vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@saske.burladuck.com:443?encryption=
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@oppo.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.vk.com&fp=random&pbk=bwuT_tpimT_uUeWpSn-HbRztfol4o4uCcUHcdvkeFx0&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%233-1%20%F0%9F%A5%83%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@oppo.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=yandex.ru&fp=random&pbk=Ec54Eop0jZft7rcJsPN4RHc4xG9smXhtenM52pJFUQI&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%233-2%20%F0%9F%A5%83%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@oppo.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=max.ru&fp=random&pbk=BjG7XoEMR2uxHbBk_rtkR7P_S_luG2VcvQlvZ4YHzH8&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%233-3%20%F0%9F%A5%83%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@edob.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=smartcaptcha.yandexcloud.net&fp=random&pbk=2aFBQH0T8BQR8Zwp3Hq2OTF__m_ok0N3Esi_A30LhmE&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%234-1%20%F0%9F%A5%83%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@edob.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=api-maps.yandex.ru&fp=random&pbk=iCcg60DfXrWy3R5wOAbIhNZNnBqwgsCq9ZLUYh7lsB8&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%234-2%20%F0%9F%A5%83%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@edob.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=ads.x5.ru&fp=random&pbk=tIHa249H9L7bLnch0cJdw-RZvAlIqhmKwlX09jHVvHU&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%234-3%20%F0%9F%A5%83%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@vkus.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=smartcaptcha.yandexcloud.net&fp=random&pbk=vZ8yVR6ZkYZD101aLewZzl3skS965ZYj03wMxxK0zgU&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%235-1%20%F0%9F%A5%83%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@vkus.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=api-maps.yandex.ru&fp=random&pbk=2SnBxBmd9ZArafAYsCyzzz6gVdRoDe9uiVAwTG4qyTo&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%235-2%20%F0%9F%A5%83%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@vkus.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=ads.x5.ru&fp=random&pbk=f-17uzLO2JMOHio-REUufeFLm035YH_Ex_1ZXmVSmhw&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%235-3%20%F0%9F%A5%83%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@pokich.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=smartcaptcha.yandexcloud.net&fp=random&pbk=vyzsQLMRAuySJxAg0sNHXzgJuT8PGRakCay3rzUbT3k&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%236-1%20%F0%9F%A5%83%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@pokich.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=api-maps.yandex.ru&fp=random&pbk=k0LJeb3MlZamIeOM2RC6zvI2dOdoc-Z5N2BAMOwOwzk&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%236-2%20%F0%9F%A5%83%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@pokich.burladuck.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=ads.x5.ru&fp=random&pbk=I_mMGeQ8r529dq2LjFUzv0nb74zuux2zGWT2RfKuE14&sid=27e53bbcab7593d7&spx=%2F&type=tcp#%F0%9F%87%AA%F0%9F%87%BA%20White%20%236-3%20%F0%9F%A5%83%20ouVPN
