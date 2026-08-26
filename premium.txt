@@ -1,13 +1,12 @@
-# profile-title: 💎 𝗼𝘂𝗩𝗣𝗡
+# profile-title: 🍁 𝗼𝘂𝗩𝗣𝗡
 # profile-update-interval: 3
 #subscription-userinfo: download=14293651161088; total=0;
-# Date/Time: 2026-08-14 / 09:26 (Moscow)
+# Date/Time: 2026-08-26 / 06:07 (Moscow)
 # Количество: 24
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: 🌐 Дата последнего обновления: 14.08.26 - 09:26 МСК
+# announce: 🌐 Дата последнего обновления: 26.08.26 - 06:07 МСК
 
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@youtube.superbuba.top:443?security=reality&sni=youtube.superbuba.top&fp=random&type=tcp&pbk=rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs&sid=4fa44664f6a566d3&spx=/&flow=xtls-rprx-vision#YT%20%26%20DS%20%F0%9F%87%B7%F0%9F%87%BA%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@germany.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=germany.superbuba.top&fp=random&pbk=rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs&sid=4fa44664f6a566d3&spx=%2F&type=tcp#DE%20%F0%9F%87%A9%F0%9F%87%AA%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@nl.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=nl.superbuba.top&fp=firefox&pbk=z37XIezsPyfMgmdXyFd9qT4C4maDAs1OcRt-wfyrXVo&sid=9c2378562188c3cb&spx=%2F&type=tcp#🇳🇱%20NL%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@swed.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=swed.superbuba.top&fp=firefox&pbk=aqhW-AAQ4dYuBAb-gldLxd5s-8inorx4yWc1qVU061Q&sid=4fa44664f6a566d3&spx=%2F&type=tcp#SE%20🇸🇪%20ouVPN
