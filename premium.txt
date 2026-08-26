@@ -1,11 +1,11 @@
-# profile-title: 🍁 𝗼𝘂𝗩𝗣𝗡
+# profile-title: 🍂 𝗼𝘂𝗩𝗣𝗡
 # profile-update-interval: 3
 #subscription-userinfo: download=14293651161088; total=0;
-# Date/Time: 2026-08-26 / 06:31 (Moscow)
+# Date/Time: 2026-08-26 / 06:35 (Moscow)
 # Количество: 27
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: 🌐 Дата последнего обновления: 26.08.26 - 06:31 МСК
+# announce: 🌐 Дата последнего обновления: 26.08.26 - 06:35 МСК
 
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@germany.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=germany.superbuba.top&fp=random&pbk=rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs&sid=4fa44664f6a566d3&spx=%2F&type=tcp#DE%20%F0%9F%87%A9%F0%9F%87%AA%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@nl.superbuba.top:443?security=reality&encryption=none&pbk=z37XIezsPyfMgmdXyFd9qT4C4maDAs1OcRt-wfyrXVo&headerType=none&fp=firefox&spx=%2F&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=nl.superbuba.top&sid=9c2378562188c3cb#NL+%F0%9F%87%B3%F0%9F%87%B1+ouVPN
