@@ -1,20 +1,20 @@
-# profile-title: 🇪🇺 𝗼𝘂𝗩𝗣𝗡
+# profile-title: ✨ 𝗼𝘂𝗩𝗣𝗡
 # profile-update-interval: 3
 #subscription-userinfo: download=17592186044416; total=0;
-# Date/Time: 2026-09-13 / 13:23 (Moscow)
+# Date/Time: 2026-09-20 / 16:54 (Moscow)
 # Количество: 15
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: 🌐 Дата последнего обновления: 26.09.13 - 13:23 МСК
+# announce: 🌐 Дата последнего обновления: 26.09.20 - 16:54 МСК
 
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@gesmankos.sadiepinki.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=gesmankos.sadiepinki.com&fp=firefox&pbk=rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs&sid=4fa44664f6a566d3&spx=%2F&type=tcp#DE%20🇩🇪%20ouVPN
 hy2://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@dehys.superbuba.top:443?sni=dehys.superbuba.top#DE%20🇩🇪%20Игровой
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@nl.superbuba.top:443?security=reality&encryption=none&pbk=z37XIezsPyfMgmdXyFd9qT4C4maDAs1OcRt-wfyrXVo&headerType=none&fp=firefox&spx=%2F&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=nl.superbuba.top&sid=9c2378562188c3cb#NL+%F0%9F%87%B3%F0%9F%87%B1+ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@swed.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=swed.superbuba.top&fp=firefox&pbk=aqhW-AAQ4dYuBAb-gldLxd5s-8inorx4yWc1qVU061Q&sid=4fa44664f6a566d3&spx=%2F&type=tcp#SE%20🇸🇪%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@jp.superbuba.top:443?mode=gun&security=reality&encryption=none&authority=&pbk=IBd0fFI3UGxCVcwB7HjnYgCAjDd5hczwR742wsY1Akw&fp=chrome&spx=%2F&allowinsecure=0&type=grpc&serviceName=&sni=jp.superbuba.top&sid=9c2378562188c3cb#JP+%F0%9F%87%AF%F0%9F%87%B5+ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@lt.aether-runet.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=lt.aether-runet.top&fp=firefox&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&sid=4fa44664f6a566d3&spx=%2F&type=tcp#LT%20🇱🇹%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@it.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=it.superbuba.top&fp=random&pbk=G2U8_BvRAgcOw0sX8u_0yYdVAlD8CWLSi-uYjvH07hw&sid=4fa44664f6a566d3&spx=%2F&type=tcp#🇮🇹%20IT%20ouVPN
-vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@usa.superbuba.top:443?encryption=none&security=reality&sni=usa.superbuba.top&fp=chrome&pbk=5en_SFrWntR3ZtxGn7_ZnnK5UW_Prh90rs-o8p7glw4&sid=9c2378562188c3cb&spx=%2F&type=grpc&serviceName=#US%20%F0%9F%87%BA%F0%9F%87%B8%20ouVPN
+vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@ltnew.aether-runet.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=ltnew.aether-runet.top&fp=firefox&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&sid=4fa44664f6a566d3&spx=%2F&type=tcp#LT%20🇱🇹%20ouVPN
+vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@italia.superbuba.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=italia.superbuba.top&fp=firefox&pbk=G2U8_BvRAgcOw0sX8u_0yYdVAlD8CWLSi-uYjvH07hw&sid=4fa44664f6a566d3&spx=%2F&type=tcp#IT%20🇮🇹%20ouVPN
+vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@sha.superbuba.top:443?encryption=none&security=reality&sni=sha.superbuba.top&fp=firefox&pbk=5en_SFrWntR3ZtxGn7_ZnnK5UW_Prh90rs-o8p7glw4&sid=9c2378562188c3cb&spx=%2F&type=grpc#US%20🇺🇲%20ouVPN
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@poland.superbuba.top:443?security=reality&encryption=none&pbk=GmZv3anSeAeHr_cMFKr-6MPLli-nyKNatnY6P3AFK00&headerType=none&fp=chrome&spx=%2F&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=poland.superbuba.top&sid=9c2378562188c3cb#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN
 
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@dostavka.stroymatdv.cc:443?type=ws&security=tls&sni=dostavka.stroymatdv.cc&alpn=http%2F1.1&fp=edge&path=%2Fe7ws&host=dostavka.stroymatdv.cc&encryption=none##1%20🇪🇺%20ouVPN
