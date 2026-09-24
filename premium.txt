@@ -1,11 +1,11 @@
-# profile-title: 🏆 𝗼𝘂𝗩𝗣𝗡
+# profile-title: 🏆 𝗼𝘂𝗩𝗣𝗡 V2
 # profile-update-interval: 3
 #subscription-userinfo: download=23089744183296; total=0;
-# Date/Time: 2026-09-25 / 01:39 (Moscow)
+# Date/Time: 2026-09-25 / 01:40 (Moscow)
 # Количество: 39
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: 🏆 [V2] Дата последнего обновления: 26.09.25 - 01:39 МСК
+# announce: 🏆 [V2] Дата последнего обновления: 26.09.25 - 01:40 МСК
 
 vless://5be800a1-742f-4c1a-a03f-b0dce2bc04b1@ltnew.aether-runet.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=ltnew.aether-runet.top&fp=firefox&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&sid=4fa44664f6a566d3&spx=%2F&type=tcp#LT%20🇱🇹%20ouVPN
 
