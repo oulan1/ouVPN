@@ -1,0 +1,22 @@
+# profile-title: 🥀 𝗼𝘂𝗩𝗣𝗡 V2
+# profile-update-interval: 12
+#subscription-userinfo: download=0; total=0;
+# Date/Time: 2026-10-18 / 00:21(Moscow)
+# Количество: 12
+# profile-web-page-url: https://oulan1.github.io/ouVPN/
+# support-url: https://t.me/oulanGift
+# announce: 🕯️ Надеемся всё обойдется
+
+vless://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@ltnew.aether-runet.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=ltnew.aether-runet.top&fp=firefox&pbk=vrcsm8L_tY7sNbnCEdLCEjOthh_w9bdWS3wFPgsIomk&sid=4fa44664f6a566d3&spx=%2F&type=tcp#LT%20🇱🇹%20ouVPN%20V2
+vless://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@jp.superbuba.top:443?encryption=none&security=reality&sni=jp.superbuba.top&fp=firefox&pbk=IBd0fFI3UGxCVcwB7HjnYgCAjDd5hczwR742wsY1Akw&sid=9c2378562188c3cb&spx=%2F&type=grpc#JP%20🇯🇵%20ouVPN%20V2
+vless://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@sha.superbuba.top:443?encryption=none&security=reality&sni=sha.superbuba.top&fp=firefox&pbk=5en_SFrWntR3ZtxGn7_ZnnK5UW_Prh90rs-o8p7glw4&sid=9c2378562188c3cb&spx=%2F&type=grpc#US%20🇺🇲%20ouVPN%20V2
+vless://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@depius.aether-runet.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=depius.aether-runet.top&fp=firefox&pbk=rCkSHJ7goy7ZvSlau4LfXF-QLloOJMNeMxpeeQtwtVs&sid=4fa44664f6a566d3&spx=%2F&type=tcp#DE%20🇩🇪%20ouVPN%20V2
+vless://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@fr.aether-runet.top:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=fr.aether-runet.top&fp=chrome&pbk=mbd06LKGZlQInmxNq_AOgRT_EuOMQyjX5ArfxoWpFWY&sid=d14c88e86e91bf45&spx=%2F&type=tcp#FR%20🇫🇷%20ouVPN%20V2
+vless://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@slowkd.sadiepinki.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=slowkd.sadiepinki.com&fp=firefox&pbk=z37XIezsPyfMgmdXyFd9qT4C4maDAs1OcRt-wfyrXVo&sid=9c2378562188c3cb&spx=%2F&type=tcp#NL%20🇳🇱%20ouVPN%20V2
+vless://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@pl.bubahero.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=pl.aether-runet.top&fp=chrome&pbk=GmZv3anSeAeHr_cMFKr-6MPLli-nyKNatnY6P3AFK00&sid=9c2378562188c3cb&spx=%2F&type=tcp#PL%20🇵🇱%20ouVPN%20V2
+
+vless://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@d.nehtar.ru:443?encryption=none&security=tls&sni=d.nehtar.ru&alpn=http%2F1.1&fp=firefox&type=ws&host=d.nehtar.ru&path=%2Fgateway%2Fv1%2Fws%2F74c4d5e82a8e50ccf09fc628c17dc9be##1%20🇪🇺%20ouVPN%20V2
+vless://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@api.cdnrt.net:443?encryption=none&security=tls&sni=api.cdnrt.net&alpn=http%2F1.1&fp=firefox&type=ws&host=api.cdnrt.net&path=%2Fclient%2Ftelemetry%2F0fc51861c60c%2F##2%20🇪🇺%20ouVPN%20V2
+hy2://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@bombahys.superbuba.top:443?sni=bombahys.superbuba.top&alpn=h3##3%20🇪🇺%20ouVPN%20V2
+hy2://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@althys.superbuba.top:443?sni=althys.superbuba.top&alpn=h3##4%20🇪🇺%20ouVPN%20V2
+hy2://e0852bb4-5bef-43eb-81f3-6bdcc71b1e3c@althys2.superbuba.top:443?sni=althys2.superbuba.top&alpn=h3##5%20🇪🇺%20ouVPN%20V2
