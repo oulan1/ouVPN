@@ -5,6 +5,6 @@
 # Количество: 1
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: Агрегатор впн заблокировал нас, пытаемся решить проблему
+# announce: за новой ссылкой на впн пишите @oulan1
 
-vless://6e5953cb-2f2a-4c13-99df-86f66e316e69@osaka.rigged.asia:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=osaka.rigged.asia&fp=firefox&pbk=dtkbo8kbPcJ5gwnze_S8ntHL3FK7k_pgzt-2znFGnhs&spx=%2F&type=tcp#NL%20🇳🇱%20ouVPN
+vless://e7ca6f77-0dea-475b-97fb-44b5da6db7f4@de.puflino.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=edge-fr.extazy.net&fp=firefox&pbk=ygxQyBcJzlLgpSl3MCRDDiFET4TT-3wxa4GdG1obkCY&sid=ba4b2afa9e7193ea&spx=%2F&type=tcp#DE%20🇩🇪%20ouVPN%20V2
