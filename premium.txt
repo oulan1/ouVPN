@@ -5,6 +5,6 @@
 # Количество: 1
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: за новой ссылкой на впн пишите @oulan1
+# announce: за новой ссылкой на впн пишите @UglySty1ez
 
 vless://e7ca6f77-0dea-475b-97fb-44b5da6db7f4@de.puflino.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=edge-fr.extazy.net&fp=firefox&pbk=ygxQyBcJzlLgpSl3MCRDDiFET4TT-3wxa4GdG1obkCY&sid=ba4b2afa9e7193ea&spx=%2F&type=tcp#DE%20🇩🇪%20ouVPN%20V2
