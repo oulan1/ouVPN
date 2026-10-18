@@ -1,5 +1,5 @@
-# profile-title: 🥲 𝗼𝘂𝗩𝗣𝗡 V2
-# profile-update-interval: 3
+# profile-title: 🟢 𝗼𝘂𝗩𝗣𝗡 V2
+# profile-update-interval: 1
 #subscription-userinfo: download=0; total=0;
 # Date/Time: 2026-10-17 / 17:23(Moscow)
 # Количество: 1
@@ -7,4 +7,8 @@
 # support-url: https://t.me/oulanGift
 # announce: за новой ссылкой на впн пишите @UglySty1ez
 
+vless://4cb9157c-cd6f-451f-b786-1c92edec32cb@103.200.28.124:8478?security=reality&encryption=none&pbk=n3BiVX_oDQXcqC0OmOm5o0RuOaXoHHhdiQ2s-xqkayA&headerType=none&fp=qq&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=ru.tradingview.com&sid=d7c8227902c1d878#%F0%9F%87%A8%F0%9F%87%BF+Czechia%2C+Prague+%7C+%5BBL%5D
+vless://732ec777-bf4a-4fee-835a-25d6a8b58563@farancenew.mamadhpbot.ir:8080?path=%2Freal&security=none&encryption=none&type=ws#%F0%9F%87%AB%F0%9F%87%B7+France%2C+Aubervilliers+%7C+%5BBL%5D
+vless://b3441cc7-1e5f-4eb6-8207-90788eeca21e@165.231.170.18:8443?security=tls&encryption=none&fp=firefox&allowinsecure=0&type=raw&flow=xtls-rprx-vision&sni=api-6ad3c751.adhil.uk#%F0%9F%87%AA%F0%9F%87%AA+Estonia%2C+Tallinn+%7C+%5BBL%5D
+vless://9cb8d71c-fe06-4402-a591-eaa1f173b890@83.168.91.16:443?mode=gun&security=tls&encryption=none&authority=&fp=chrome&allowinsecure=0&type=grpc&serviceName=framefeed&sni=pl-exit-02.10media.top#%F0%9F%87%B5%F0%9F%87%B1+Poland%2C+Warsaw+%7C+%5BBL%5D
 vless://e7ca6f77-0dea-475b-97fb-44b5da6db7f4@de.puflino.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=edge-fr.extazy.net&fp=firefox&pbk=ygxQyBcJzlLgpSl3MCRDDiFET4TT-3wxa4GdG1obkCY&sid=ba4b2afa9e7193ea&spx=%2F&type=tcp#DE%20🇩🇪%20ouVPN%20V2
