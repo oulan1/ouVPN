@@ -2,13 +2,14 @@
 # profile-update-interval: 3
 #subscription-userinfo: download=0; total=0;
 # Date/Time: 2026-10-22 / 00:03 (Moscow)
-# Количество: 7
+# Количество: 8
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
 # announce: Last Update: 2026-10-22 / 00:03 [❇️ Active]
 
 vless://f091466a-33db-418e-9c3f-333eef243e22@nl.puflino.com:8443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=nl2.reddotcorp.org&fp=edge&pbk=VDZdbh_RzDDZsHpYF58yUuuvXh93XnmkvpSqb50qG2U&sid=1be482b8e08aa0ef&type=tcp#NL%20🇳🇱%20ouVPN%20V2
 vless://f091466a-33db-418e-9c3f-333eef243e22@gb.puflino.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=edge-uk2.mystatic-cdn.ru&fp=edge&pbk=65d6SIYIqiX-SN4vx_BnNiQJ8Lnr0HAgUKoT7WgWRgI&sid=ee169e93d3c277a1&spx=%2F&type=tcp#GB%20🇬🇧%20ouVPN%20V2
+vless://f091466a-33db-418e-9c3f-333eef243e22@ru.puflino.com:443?encryption=none&flow=xtls-rprx-vision&security=tls&sni=edge-atlru.extazy.net&alpn=h2&fp=firefox&type=tcp#RU%20🇷🇺%20ouVPN
 vless://f091466a-33db-418e-9c3f-333eef243e22@de.puflino.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=edge-fr.extazy.net&fp=firefox&pbk=ygxQyBcJzlLgpSl3MCRDDiFET4TT-3wxa4GdG1obkCY&sid=ba4b2afa9e7193ea&spx=%2F&type=tcp#DE%20🇩🇪%20ouVPN%20V2
 vless://f091466a-33db-418e-9c3f-333eef243e22@fr.puflino.com:8443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=fr.atlanta-api.com&fp=edge&pbk=dJqaQL_kSl2DFR7Dx3igZXhPuw1uW9d7XejtyYSvkGg&sid=aaa2ba7d45c12957&type=tcp#FR%20🇫🇷%20ouVPN%20V2
 vless://f091466a-33db-418e-9c3f-333eef243e22@pl.puflino.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=pl.atlanta-api.com&fp=firefox&pbk=2YbfBDRn1xu5OOVvC6H7Pq0p0gRtZtvSqFS08-M-DUY&sid=fad7e3b745b23e34&type=tcp#PL%20🇵🇱%20ouVPN%20V2
