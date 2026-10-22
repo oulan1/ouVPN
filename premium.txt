@@ -1,6 +1,3 @@
 # profile-title: 🔴 𝗼𝘂𝗩𝗣𝗡
 #subscription-userinfo: download=0; total=0;
 # announce: за новой ссылкой на впн пишите @UglySty1ez
-
-https://raw.githubusercontent.com/oulan1/ouVPN/refs/heads/main/nl.json
-https://raw.githubusercontent.com/oulan1/ouVPN/refs/heads/main/tr.json
