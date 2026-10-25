@@ -1,11 +1,11 @@
 # profile-title: 🟢 𝗼𝘂𝗩𝗣𝗡 V2
 # profile-update-interval: 3
 #subscription-userinfo: download=0; total=0;
-# Date/Time: 2026-10-23 / 00:50 (Moscow)
-# Количество: 41
+# Date/Time: 2026-10-25 / 21:43 (Moscow)
+# Количество: 44
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: Last update: 2026-10-23 / 20:50 [❇️ Active]
+# announce: Last update: 2026-10-25 / 21:43 [❇️ Active]
 
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@rheinmode.rtxownerez.com:443?security=reality&encryption=none&pbk=TTD2h-hUhD39pZfEOQtAjsTTR1LpN9034M2QjDSi8yE&headerType=none&fp=firefox&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=rheinmode.rtxownerez.com&sid=569eb4ca6edbd45f#DE+%F0%9F%87%A9%F0%9F%87%AA+ouVPN+V2+%28Rheinmode-TCP%29
 hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@static.hain.lalibobi.online:443?security=tls&allowinsecure=0&sni=static.hain.lalibobi.online#DE+%F0%9F%87%A9%F0%9F%87%AA+ouVPN+V2+%28Hain-Hysteria2%29
@@ -23,6 +23,7 @@ hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@static.court.lalibobi.online:44
 hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@static.dune.lalibobi.online:443?security=tls&allowinsecure=0&sni=static.dune.lalibobi.online#NL+%F0%9F%87%B3%F0%9F%87%B1+ouVPN+V2+%28Dune-Hysteria2%29
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@media.lumi.lalibobi.online:443?path=%2Flive%2Fshowroom&security=tls&encryption=none&alpn=http/1.1&host=media.lumi.lalibobi.online&fp=firefox&allowinsecure=0&type=ws&sni=media.lumi.lalibobi.online#FI+%F0%9F%87%AB%F0%9F%87%AE+ouVPN+V2+%28Lumi-WS%29
 hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@static.lumi.lalibobi.online:443?security=tls&allowinsecure=0&sni=static.lumi.lalibobi.online#FI+%F0%9F%87%AB%F0%9F%87%AE+ouVPN+V2+%28Lumi-Hysteria2%29
+hy2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@arena.lalibobi.online:443?sni=arena.lalibobi.online&alpn=h3#PL%20🇵🇱%20ouVPN%20V2%20(Польша%20Игровой)
 hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@static.rally.lalibobi.online:443?security=tls&allowinsecure=0&sni=static.rally.lalibobi.online#FI+%F0%9F%87%AB%F0%9F%87%AE+ouVPN+V2+%28%D0%A4%D0%B8%D0%BD%D0%BA%D0%B0+%D0%98%D0%B3%D1%80%D0%BE%D0%B2%D0%BE%D0%B9%29
 hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@static.court.lalibobi.online:443?security=tls&allowinsecure=0&sni=static.court.lalibobi.online#NL+%F0%9F%87%B3%F0%9F%87%B1+ouVPN+V2+%28%D0%9D%D0%B8%D0%B4%D0%B5%D1%80%D1%8B+%D0%98%D0%B3%D1%80%D0%BE%D0%B2%D0%BE%D0%B9%29
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@45.13.186.253:443?security=reality&encryption=none&pbk=Jsj1kfMKT6_xnxB2yzDWSs9qPeU1zJkPXZBWh37-4UM&headerType=none&fp=firefox&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=cz1.luckdns.fun&sid=8f26301d#CZ+%F0%9F%87%A8%F0%9F%87%BF+ouVPN+V2+%28TCP%29
@@ -35,10 +36,12 @@ vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@api.selene.lalibobi.online:443?mode
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@media.selene.lalibobi.online:443?path=%2Flive%2Fshowroom&security=tls&encryption=none&alpn=http/1.1&host=media.selene.lalibobi.online&fp=firefox&allowinsecure=0&type=ws&sni=media.selene.lalibobi.online#TR+%F0%9F%87%B9%F0%9F%87%B7+ouVPN+V2+%28Selene-WS%29
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@media.verdan.lalibobi.online:443?path=%2Flive%2Fshowroom&security=tls&encryption=none&alpn=http/1.1&host=media.verdan.lalibobi.online&fp=firefox&allowinsecure=0&type=ws&sni=media.verdan.lalibobi.online#SK+%F0%9F%87%B8%F0%9F%87%B0+ouVPN+V2+%28Verdan-WS%29
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@hinoki.lalibobi.online:443?security=reality&encryption=none&pbk=of5IGFLdYn5BrWcKnwW3ucJfrQCt7ofPkySZWen3EzI&headerType=none&fp=firefox&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=hinoki.lalibobi.online&sid=3e9f3d0780415792#JP+%F0%9F%87%AF%F0%9F%87%B5+ouVPN+V2+%28Hinoki-TCP%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@api.cdnrt.net:443?path=%2Fclient%2Freport%2F9632b059a1be%2F&security=tls&encryption=none&alpn=http/1.1&host=api.cdnrt.net&fp=firefox&allowinsecure=0&type=ws&sni=api.cdnrt.net#EU+%F0%9F%87%AA%F0%9F%87%BA+ouVPN+V2+%28LTE-WS%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@dropstyle.lol:443?path=%2Fservice%2Fmetrics%2F51dec2df3071%2F&security=tls&encryption=none&alpn=http/1.1&host=dropstyle.lol&fp=firefox&allowinsecure=0&type=ws&sni=dropstyle.lol#EU+%F0%9F%87%AA%F0%9F%87%BA+ouVPN+V2+%28LTE-WS-2%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@lalibobi.online:443?mode=gun&security=tls&encryption=none&alpn=h2&authority=filnex.baby&fp=edge&allowinsecure=0&type=grpc&serviceName=lalibobi.orbit.v3.Connect&sni=filnex.baby#EU+%F0%9F%87%AA%F0%9F%87%BA+ouVPN+V2+%28LTE-gRPC-3%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@95.163.232.165:443?mode=packet-up&path=%2Fapi%2Fv9%2Fcatalog%2Fmanifest-a4e1.json&security=tls&encryption=none&alpn=h2,http/1.1&host=amber.lalibobi.online&fp=firefox&allowinsecure=0&type=xhttp&sni=amber.lalibobi.online#EU+%F0%9F%87%AA%F0%9F%87%BA+ouVPN+V2+%28LTE-4-XHTTP-IP%29
+vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@dropstyle.lol:443?encryption=none&security=tls&sni=dropstyle.lol&alpn=http%2F1.1&fp=firefox&type=ws&path=%2Fplayer%2Fmetrics%2F97662863db53%2F&host=dropstyle.lol#EU%20🇪🇺%20ouVPN%20V2%20(LTE-WS-1)
+vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@dropstyle.lol:443?encryption=none&security=tls&sni=dropstyle.lol&alpn=http%2F1.1&fp=firefox&type=ws&path=%2Fservice%2Fmetrics%2F51dec2df3071%2F&host=dropstyle.lol#EU%20🇪🇺%20ouVPN%20V2%20(LTE-WS-2)
+vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@ed2e7fkruv.rucdncomp.pro:443?encryption=none&security=tls&sni=ed2e7fkruv.rucdncomp.pro&alpn=http%2F1.1&fp=firefox&type=ws&path=%2Fuseraction%2Fcollect%2F9a5e672836b1%2F&host=ed2e7fkruv.rucdncomp.pro#EU%20🇪🇺%20ouVPN%20V2%20(LTE-WS-Без-МТС)
+vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@95.163.232.165:443?encryption=none&security=tls&sni=amber.lalibobi.online&alpn=h2%2Chttp%2F1.1&fp=firefox&type=xhttp&mode=packet-up&path=%2Fapi%2Fv9%2Fcatalog%2Fmanifest-a4e1.json&host=amber.lalibobi.online#EU%20🇪🇺%20ouVPN%20V2%20(LTE-4-Без-Билайна-IP)
+vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@amber.lalibobi.online:443?encryption=none&security=tls&sni=amber.lalibobi.online&alpn=h2%2Chttp%2F1.1&fp=firefox&type=xhttp&mode=packet-up&path=%2Fassets%2Fv9%2Fcollections%2Fdigest-b7c2.json&host=amber.lalibobi.online#EU%20🇪🇺%20ouVPN%20V2%20(LTE-4-Без-Билайна-1)
+vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@amber.lalibobi.online:443?encryption=none&security=tls&sni=amber.lalibobi.online&alpn=h2%2Chttp%2F1.1&fp=firefox&type=xhttp&mode=packet-up&path=%2Fdata%2Fv9%2Farchive%2Fpayload-c9d3.bin&host=amber.lalibobi.online#EU%20🇪🇺%20ouVPN%20V2%20(LTE-4-Без-Билайна-2)
 
 vless://f091466a-33db-418e-9c3f-333eef243e22@nl.puflino.com:8443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=nl2.reddotcorp.org&fp=edge&pbk=VDZdbh_RzDDZsHpYF58yUuuvXh93XnmkvpSqb50qG2U&sid=1be482b8e08aa0ef&type=tcp#NL%20🇳🇱%20ouVPN%20V2
 vless://f091466a-33db-418e-9c3f-333eef243e22@gb.puflino.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=edge-uk2.mystatic-cdn.ru&fp=edge&pbk=65d6SIYIqiX-SN4vx_BnNiQJ8Lnr0HAgUKoT7WgWRgI&sid=ee169e93d3c277a1&type=tcp#GB%20🇬🇧%20ouVPN%20V2
