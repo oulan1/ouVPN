@@ -1,11 +1,11 @@
 # profile-title: 🟢 𝗼𝘂𝗩𝗣𝗡 V2
 # profile-update-interval: 3
 #subscription-userinfo: download=0; total=0;
-# Date/Time: 2026-11-02 / 10:12 (Moscow)
+# Date/Time: 2026-11-03 / 01:30 (Moscow)
 # Количество: 40
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: Last update: 2026-11-02 / 10:12 [🎃 Active]
+# announce: Last update: 2026-11-03 / 01:30 [🎃 Active]
 
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@rheinmode.rtxownerez.com:443?security=reality&encryption=none&pbk=TTD2h-hUhD39pZfEOQtAjsTTR1LpN9034M2QjDSi8yE&headerType=none&fp=firefox&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=rheinmode.rtxownerez.com&sid=569eb4ca6edbd45f#DE+%F0%9F%87%A9%F0%9F%87%AA+ouVPN+V2+%28Rheinmode-TCP%29
 hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@static.hain.lalibobi.online:443?security=tls&allowinsecure=0&sni=static.hain.lalibobi.online#DE+%F0%9F%87%A9%F0%9F%87%AA+ouVPN+V2+%28Hain-Hysteria2%29
@@ -41,9 +41,9 @@ vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@api.selene.lalibobi.online:443?mode
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@media.selene.lalibobi.online:443?path=%2Flive%2Fshowroom&security=tls&encryption=none&alpn=http/1.1&host=media.selene.lalibobi.online&fp=firefox&allowinsecure=0&type=ws&sni=media.selene.lalibobi.online#TR+%F0%9F%87%B9%F0%9F%87%B7+ouVPN+V2+%28Selene-WS%29
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@media.verdan.lalibobi.online:443?path=%2Flive%2Fshowroom&security=tls&encryption=none&alpn=http/1.1&host=media.verdan.lalibobi.online&fp=firefox&allowinsecure=0&type=ws&sni=media.verdan.lalibobi.online#SK+%F0%9F%87%B8%F0%9F%87%B0+ouVPN+V2+%28Verdan-WS%29
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@hinoki.lalibobi.online:443?security=reality&encryption=none&pbk=of5IGFLdYn5BrWcKnwW3ucJfrQCt7ofPkySZWen3EzI&headerType=none&fp=firefox&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=hinoki.lalibobi.online&sid=3e9f3d0780415792#JP+%F0%9F%87%AF%F0%9F%87%B5+ouVPN+V2+%28Hinoki-TCP%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@95.129.232.184:443?encryption=none&security=tls&sni=prem-ai.shop&alpn=http%2F1.1&fp=firefox&type=ws&path=%2Fgateway%2Fv1%2Fws%2F3d71fffdcc0ea992b3084743829ae1ad&host=prem-ai.shop#EU%20🇪🇺%20ouVPN%20V2%20(LTE-WS-Все-Операторы-⚡⚡)
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@95.129.232.184:443?encryption=none&security=tls&sni=prem-ai.shop&alpn=http%2F1.1&fp=firefox&type=ws&path=%2Fgateway%2Fv1%2Fws%2F63a1131b7ed3e67d18e5235b495af59f&host=prem-ai.shop#EU%20🇪🇺%20ouVPN%20V2%20(LTE-WS-Все-Операторы-⚡)
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@95.129.232.220:443?encryption=none&security=tls&sni=claude.prem-ai.shop&alpn=http%2F1.1&fp=firefox&type=ws&path=%2Fgateway%2Fv1%2Fws%2Fe3ba2e66addbcf1b2b102ad4f9779875&host=claude.prem-ai.shop#EU%20🇪🇺%20ouVPN%20V2%20(LTE-WS-Все-Операторы-🐌)
+vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@filnex.baby:443?encryption=none&security=tls&sni=filnex.baby&alpn=h2&fp=firefox&type=grpc&serviceName=lalibobi.tw.de1.Connect&authority=filnex.baby#EU%20🇪🇺%20ouVPN%20V2%20(LTE-Без-Т-Моб-⚡⚡⚡)
+vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@91.215.43.80:443?encryption=none&security=tls&sni=metrics.api.downloader-pet.xyz&alpn=http%2F1.1&fp=firefox&type=ws&path=%2Fgateway%2Fv1%2Fws%2Fa901ed17102fc3090ca1ab052c672f47&host=metrics.api.downloader-pet.xyz#EU%20🇪🇺%20ouVPN%20V2%20(LTE-WS-DownloaderPet-⚡⚡)
+vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@91.215.43.80:443?encryption=none&security=tls&sni=metrics.api.downloader-pet.xyz&alpn=http%2F1.1&fp=firefox&type=ws&path=%2Fgateway%2Fv1%2Fws%2F1b1de6141119f8d47392c5c79676d8bc&host=metrics.api.downloader-pet.xyz#EU%20🇪🇺%20ouVPN%20V2%20(LTE-WS-DownloaderPet-⚡)
 
 vless://f091466a-33db-418e-9c3f-333eef243e22@nl.puflino.com:8443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=nl2.reddotcorp.org&fp=edge&pbk=VDZdbh_RzDDZsHpYF58yUuuvXh93XnmkvpSqb50qG2U&sid=1be482b8e08aa0ef&type=tcp#NL%20🇳🇱%20ouVPN%20V2
 vless://f091466a-33db-418e-9c3f-333eef243e22@gb.puflino.com:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=edge-uk2.mystatic-cdn.ru&fp=edge&pbk=65d6SIYIqiX-SN4vx_BnNiQJ8Lnr0HAgUKoT7WgWRgI&sid=ee169e93d3c277a1&type=tcp#GB%20🇬🇧%20ouVPN%20V2
