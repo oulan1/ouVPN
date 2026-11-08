@@ -1,11 +1,11 @@
-# profile-title: 🟢 𝗼𝘂𝗩𝗣𝗡 V2
+# profile-title: ⚫ 𝗼𝘂𝗩𝗣𝗡 V2
 # profile-update-interval: 3
 #subscription-userinfo: download=0; total=0;
 # Date/Time: 2026-11-07 / 23:40 (Moscow)
 # Количество: 3
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: опять забанили, думаем что делать
+# announce: ❇️ Затишье перед бурей 
 
 
 vless://f091466a-33db-418e-9c3f-333eef243e22@nl.puflino.com:8443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=nl2.reddotcorp.org&fp=edge&pbk=VDZdbh_RzDDZsHpYF58yUuuvXh93XnmkvpSqb50qG2U&sid=1be482b8e08aa0ef&type=tcp#NL%20🇳🇱%20ouVPN%20V2
