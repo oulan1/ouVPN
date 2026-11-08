@@ -2,22 +2,10 @@
 # profile-update-interval: 3
 #subscription-userinfo: download=0; total=0;
 # Date/Time: 2026-11-07 / 23:40 (Moscow)
-# Количество: 46
+# Количество: 35
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
 # announce: Last update: 2026-11-07 / 23:40
-
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@alder.lalibobi.online:443?security=reality&encryption=none&pbk=tKzo0qk-NJCNnmxmSgP7uGmd9VHKiTG2L-YqXYGj4Dc&headerType=none&fp=firefox&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=alder.lalibobi.online&sid=203242200f9d16be#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Alder-TCP%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@api.alder.lalibobi.online:443?mode=multi&security=reality&encryption=none&authority=api.alder.lalibobi.online&pbk=tKzo0qk-NJCNnmxmSgP7uGmd9VHKiTG2L-YqXYGj4Dc&fp=firefox&allowinsecure=0&type=grpc&serviceName=shop.v1.Catalog&sni=api.alder.lalibobi.online&sid=203242200f9d16be#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Alder-gRPC%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@media.alder.lalibobi.online:443?path=%2Flive%2Fshowroom&security=tls&encryption=none&alpn=http/1.1&host=media.alder.lalibobi.online&fp=firefox&allowinsecure=0&type=ws&sni=media.alder.lalibobi.online#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Alder-WS%29
-hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@static.alder.lalibobi.online:443?security=tls&allowinsecure=0&sni=static.alder.lalibobi.online#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Alder-Hysteria2%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@rowan.lalibobi.online:443?security=reality&encryption=none&pbk=WBkO_JIRKVjfwh7GlIIACmAJaVFobgm_EebPZgk7ijU&headerType=none&fp=firefox&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=rowan.lalibobi.online&sid=c374306818a47741#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Rowan-TCP%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@media.rowan.lalibobi.online:443?path=%2Flive%2Fshowroom&security=tls&encryption=none&alpn=http/1.1&host=media.rowan.lalibobi.online&fp=firefox&allowinsecure=0&type=ws&sni=media.rowan.lalibobi.online#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Rowan-WS%29
-hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@arena.lalibobi.online:443?security=tls&allowinsecure=0&sni=arena.lalibobi.online#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Arena-Hysteria2%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@sylva.lalibobi.online:443?security=reality&encryption=none&pbk=1u_1o7KduVO_STjiVvPVr75qp4kibn3W7oV54uS3nTc&headerType=none&fp=firefox&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=sylva.lalibobi.online&sid=94b60f730e5a0e24#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Sylva-TCP%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@api.sylva.lalibobi.online:443?mode=multi&security=reality&encryption=none&authority=api.sylva.lalibobi.online&pbk=1u_1o7KduVO_STjiVvPVr75qp4kibn3W7oV54uS3nTc&fp=firefox&allowinsecure=0&type=grpc&serviceName=shop.v1.Catalog&sni=api.sylva.lalibobi.online&sid=94b60f730e5a0e24#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Sylva-gRPC%29
-vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@media.sylva.lalibobi.online:443?path=%2Flive%2Fshowroom&security=tls&encryption=none&alpn=http/1.1&host=media.sylva.lalibobi.online&fp=firefox&allowinsecure=0&type=ws&sni=media.sylva.lalibobi.online#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Sylva-WS%29
-hysteria2://0fae0e26-3ba2-428d-b74c-d0ac5687196e@static.sylva.lalibobi.online:443?security=tls&allowinsecure=0&sni=static.sylva.lalibobi.online#PL+%F0%9F%87%B5%F0%9F%87%B1+ouVPN+V2+%28Sylva-Hysteria2%29
 
 
 vless://0fae0e26-3ba2-428d-b74c-d0ac5687196e@95.85.245.145:443?security=reality&encryption=none&pbk=Oc8iFCgfl2hRU3yCf2aaZOxiuK5GLwxct3lYy6sw7nk&headerType=none&fp=firefox&allowinsecure=0&type=tcp&flow=xtls-rprx-vision&sni=1cent.luckdns.fun#EE+%F0%9F%87%AA%F0%9F%87%AA+ouVPN+V2+%281Cent-IP%29
