@@ -1,6 +1,5 @@
 name: Update VPN Servers
 
-# Запуск каждый час ровно в 10 минут (например: 00:10, 01:10, 02:10 и т.д.)
 on:
   schedule:
     - cron: '10 * * * *'
@@ -20,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -39,6 +40,5 @@ jobs:
             echo "Изменений нет, коммит не требуется."
           else
             git commit -m "Обновление списка серверов ouVPN [skip ci]"
-            git pull --rebase origin main || true
-            git push origin main
+            git push origin HEAD:main
           fi
