@@ -1,11 +1,11 @@
 # profile-title: 🟢 𝗼𝘂𝗩𝗣𝗡 V2
 # profile-update-interval: 1
 #subscription-userinfo: download=0; total=0;
-# Date/Time: 2026-11-09 / 06:14 (Moscow)
+# Date/Time: 2026-11-09 / 06:16 (Moscow)
 # Количество: 399
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: Обновлено: 2026-11-09 06:14 (МСК)
+# announce: Обновлено: 2026-11-09 06:16 (МСК)
 
 
 vless://bb3723d7-462e-442c-9472-496750476f45@94.183.157.205:443?security=reality&flow=xtls-rprx-vision&fp=firefox&pbk=VrMjCVfS9bVTnIr2X_zBMIJylL5AMPMJoiwW14kyyjY&sid=b5e4cbe5fea54f53&sni=dir-pl2.filesapp.org#PL%20🇵🇱%20ouVPN%20V2
