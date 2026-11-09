@@ -2,8 +2,8 @@ name: Update VPN Servers
 
 on:
   schedule:
-    # Запуск каждый час в 0 минут (UTC)
-    - cron: '0 * * * *'
+    # Запуск каждый час в 10 минут (UTC)
+    - cron: '10 * * * *'
   workflow_dispatch: # Возможность запустить вручную кнопкой в Actions
   push:
     paths:
