@@ -1,0 +1,43 @@
+name: Update VPN Servers
+
+on:
+  schedule:
+    # Запуск каждый час в 0 минут (UTC)
+    - cron: '0 * * * *'
+  workflow_dispatch: # Возможность запустить вручную кнопкой в Actions
+  push:
+    paths:
+      - 'heading.txt'
+      - 'update_configs.py'
+
+permissions:
+  contents: write
+
+jobs:
+  update-servers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run server updater
+        run: |
+          python update_configs.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add ouvpn.txt
+          if git diff --staged --quiet; then
+            echo "Изменений нет, коммит не требуется."
+          else
+            git commit -m "Обновление списка серверов ouVPN [skip ci]"
+            git push
+          fi
