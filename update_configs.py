@@ -15,7 +15,7 @@ import urllib.parse
 from datetime import datetime, timezone, timedelta
 
 # Ссылка на исходную подписку с конфигами
-SOURCE_URL = "https://raw.githubusercontent.com/bobrinaw/vlessforu/refs/heads/main/working_configs.txt"
+SOURCE_URL = "https://raw.githubusercontent.com/bobrinaw/vlessforu/main/working_configs.txt"
 
 # Пути к файлам (по умолчанию в текущей папке репозитория)
 HEADING_FILE = "heading.txt"
