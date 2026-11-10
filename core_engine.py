@@ -2,8 +2,15 @@
 # -*- coding: utf-8 -*-
 """
 ouVPN Core Engine
-Общий модуль: парсинг конфигов (ТОЛЬКО VLESS), извлечение метаданных, генерация имен (#ID | Country ouVPN V2),
-проверка пинга через Xray (HTTP GET generate_204) и сортировка серверов.
+Общий модуль:
+- Парсинг конфигов ТОЛЬКО VLESS из двух источников:
+  1) VlessForU (bobrinaw)
+  2) BlackVlessRus (igareck)
+- Двойная проверка доступности:
+  1) Google (http://www.gstatic.com/generate_204)
+  2) Telegram (https://t.me)
+- Генерация названий с #ID в начале: #ID | Country ouVPN V2 (и ⚡ для скоростных)
+- Сортировка: Европа ➔ Другие страны ➔ Россия (RU) ➔ Обходы (EU)
 """
 
 import os
@@ -21,8 +28,15 @@ import urllib.parse
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-SOURCE_URL = "https://raw.githubusercontent.com/bobrinaw/vlessforu/refs/heads/main/working_configs.txt"
-PING_TEST_URL = "http://www.gstatic.com/generate_204"
+# Список источников VLESS конфигов
+SOURCE_URLS = [
+    "https://raw.githubusercontent.com/bobrinaw/vlessforu/refs/heads/main/working_configs.txt",
+    "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/BLACK_VLESS_RUS.txt"
+]
+
+# Адреса для двухэтапной проверки
+PING_TEST_URL_GOOGLE = "http://www.gstatic.com/generate_204"
+PING_TEST_URL_TELEGRAM = "https://t.me"
 
 # Регулярка для извлечения эмодзи-флагов стран
 FLAG_RE = re.compile(r'[\U0001F1E6-\U0001F1FF]{2}')
@@ -94,47 +108,71 @@ def ensure_xray_binary(on_status=None) -> str:
     return xray_path
 
 
-def fetch_source_configs(url: str = SOURCE_URL, timeout: int = 30) -> list[str]:
-    """Скачивает строки конфигов из источника."""
+def fetch_source_configs(urls: list[str] = None, timeout: int = 30) -> list[str]:
+    """
+    Скачивает VLESS конфиги из всех источников в списке,
+    дедуплицирует по содержимому ссылки (без учета хеша).
+    """
+    if urls is None:
+        urls = SOURCE_URLS
+
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
         "Accept": "*/*"
     }
-    req = urllib.request.Request(url, headers=headers)
-    for attempt in range(1, 4):
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                content = resp.read().decode("utf-8", errors="ignore")
-                return [line.strip() for line in content.splitlines() if line.strip()]
-        except Exception as e:
-            if attempt == 3:
-                raise RuntimeError(f"Не удалось скачать конфиги: {e}")
-            time.sleep(1)
-    return []
+
+    all_lines = []
+    seen_bases = set()
+
+    for url in urls:
+        # Корректируем возможные опечатки в URL
+        clean_url = url
+        if "refs/BLACK_VLESS_RUS.txt" in clean_url:
+            clean_url = clean_url.replace("refs/BLACK_VLESS_RUS.txt", "main/BLACK_VLESS_RUS.txt")
+
+        for attempt in range(1, 4):
+            try:
+                req = urllib.request.Request(clean_url, headers=headers)
+                with urllib.request.urlopen(req, timeout=timeout) as resp:
+                    content = resp.read().decode("utf-8", errors="ignore")
+                    lines = [line.strip() for line in content.splitlines() if line.strip()]
+                    
+                    for line in lines:
+                        if line.startswith("vless://"):
+                            base = line.split("#", 1)[0].strip()
+                            if base not in seen_bases:
+                                seen_bases.add(base)
+                                all_lines.append(line)
+                        elif line.startswith("#"):
+                            all_lines.append(line)
+                    break
+            except Exception:
+                if attempt == 3:
+                    pass
+                time.sleep(1)
+
+    return all_lines
 
 
 def parse_source_metadata(lines: list[str]) -> dict:
-    """Извлекает метаданные из шапки исходного файла."""
+    """Извлекает метаданные из шапок исходных файлов."""
     meta = {
         "source_count": 0,
         "source_update_time": "Неизвестно",
-        "source_title": ""
+        "source_title": "ouVPN VLESS Bundle"
     }
+    
+    # Ищем самую свежую дату в анонсах
     for line in lines:
         if not line.startswith("#"):
             continue
         line_clean = line.lstrip("#").strip()
-        if line_clean.startswith("announce:"):
-            text = line_clean.split("announce:", 1)[1].strip()
-            m_time = re.search(r'(\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2})', text)
+        if "announce:" in line_clean or "Date/Time:" in line_clean:
+            m_time = re.search(r'(\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2}|\d{4}-\d{2}-\d{2}\s*/\s*\d{2}:\d{2})', line_clean)
             if m_time:
                 meta["source_update_time"] = m_time.group(1)
-            else:
-                meta["source_update_time"] = text[:60]
-        elif line_clean.startswith("profile-title:"):
-            meta["source_title"] = line_clean.split("profile-title:", 1)[1].strip()
 
-    # Считаем количество ТОЛЬКО VLESS серверов
+    # Считаем количество ТОЛЬКО уникальных VLESS серверов
     meta["source_count"] = sum(1 for l in lines if l.startswith("vless://"))
     return meta
 
@@ -153,7 +191,7 @@ class ServerItem:
     """Класс представления одного VPN-сервера (только VLESS)."""
     def __init__(self, raw_url: str, source_id: int):
         self.raw_url = raw_url
-        self.source_id = source_id  # 1-based порядковый номер Vless в источнике
+        self.source_id = source_id  # 1-based порядковый номер Vless в объединенном списке
         self.scheme = "vless"
         
         # Извлечение старого названия
@@ -168,7 +206,9 @@ class ServerItem:
         self.selected = True
         self.is_fast = False  # Отметка ⚡ (золотая строка)
         
-        # Данные пинга
+        # Данные двухэтапной проверки
+        self.google_ok = False
+        self.tg_ok = False
         self.ping_ms = None
         self.ping_status = "не проверен"
         
@@ -219,18 +259,23 @@ class ServerItem:
 
 
 def parse_all_servers(lines: list[str]) -> list[ServerItem]:
-    """Парсит строки в список объектов ServerItem (ТОЛЬКО VLESS, остальные отсеиваются)."""
+    """Парсит строки в список объектов ServerItem (ТОЛЬКО VLESS, с дедупликацией)."""
     servers = []
     source_counter = 0
     eu_counter = 0
+    seen_bases = set()
 
     for line in lines:
         if line.startswith("#"):
             continue
-        # Фильтруем: оставляем ТОЛЬКО vless://
         if not line.startswith("vless://"):
             continue
             
+        base = line.split("#", 1)[0].strip()
+        if base in seen_bases:
+            continue
+        seen_bases.add(base)
+
         source_counter += 1
         item = ServerItem(line, source_counter)
         if item.is_bypass:
@@ -310,13 +355,15 @@ def convert_item_to_xray_outbound(item: ServerItem, tag: str) -> dict | None:
 def test_servers_ping_xray(
     servers: list[ServerItem],
     on_progress=None,
-    timeout: int = 10,
-    batch_size: int = 40,
+    timeout: int = 8,
+    batch_size: int = 35,
     stop_event: threading.Event = None
 ):
     """
-    Проверяет список серверов через настоящий Xray HTTP GET запрос на gstatic.com/generate_204.
-    Тестирование происходит параллельно пачками для высокой скорости.
+    Двойная проверка доступности через Xray:
+    1) HTTP GET на Google (gstatic generate_204)
+    2) HTTPS GET на Telegram (https://t.me)
+    Сервер считается рабочим только если ОБЕ проверки успешны!
     """
     xray_path = ensure_xray_binary()
     core_dir = get_core_dir()
@@ -325,7 +372,6 @@ def test_servers_ping_xray(
     completed = 0
     base_port = 25000
 
-    # Обработка пакетами по batch_size
     for start_idx in range(0, total, batch_size):
         if stop_event and stop_event.is_set():
             break
@@ -373,45 +419,75 @@ def test_servers_ping_xray(
         with open(cfg_path, "w", encoding="utf-8") as f:
             json.dump(cfg_data, f)
 
-        # Запуск экземпляра Xray для этой пачки
         proc = subprocess.Popen(
             [xray_path, "run", "-c", cfg_path],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
-        time.sleep(0.7)  # Пауза на инициализацию портов
+        time.sleep(0.8)
 
-        def probe_single(srv: ServerItem, port_num: int):
+        def probe_double(srv: ServerItem, port_num: int):
             if stop_event and stop_event.is_set():
                 return
-            proxy_handler = urllib.request.ProxyHandler({"http": f"http://127.0.0.1:{port_num}"})
+            proxy_handler = urllib.request.ProxyHandler({
+                "http": f"http://127.0.0.1:{port_num}",
+                "https": f"http://127.0.0.1:{port_num}"
+            })
             opener = urllib.request.build_opener(proxy_handler)
-            req = urllib.request.Request(
-                PING_TEST_URL,
-                headers={"User-Agent": "Mozilla/5.0"}
-            )
+            
+            # --- Этап 1: Проверка Google (generate_204) ---
+            google_ok = False
+            g_ms = 0
             t0 = time.time()
             try:
-                with opener.open(req, timeout=timeout) as resp:
-                    if resp.status in (204, 200):
-                        ms = int(round((time.time() - t0) * 1000))
-                        srv.ping_ms = ms
-                        srv.ping_status = f"{ms} ms"
-                    else:
-                        srv.ping_ms = None
-                        srv.ping_status = f"HTTP {resp.status}"
-            except Exception as ex:
+                req_g = urllib.request.Request(
+                    PING_TEST_URL_GOOGLE,
+                    headers={"User-Agent": "Mozilla/5.0"}
+                )
+                with opener.open(req_g, timeout=timeout) as resp_g:
+                    if resp_g.status in (204, 200):
+                        google_ok = True
+                        g_ms = int(round((time.time() - t0) * 1000))
+            except Exception:
+                pass
+
+            if not google_ok:
+                srv.google_ok = False
+                srv.tg_ok = False
                 srv.ping_ms = None
-                err_str = str(ex).lower()
-                if "timed out" in err_str:
-                    srv.ping_status = "Таймаут"
-                elif "503" in err_str:
-                    srv.ping_status = "503 Ошибка"
-                else:
-                    srv.ping_status = "Не отвечает"
+                srv.ping_status = "Таймаут (Google)"
+                return
+
+            # --- Этап 2: Проверка Telegram (https://t.me) ---
+            tg_ok = False
+            tg_ms = 0
+            t1 = time.time()
+            try:
+                req_tg = urllib.request.Request(
+                    PING_TEST_URL_TELEGRAM,
+                    headers={"User-Agent": "Mozilla/5.0"}
+                )
+                with opener.open(req_tg, timeout=timeout) as resp_tg:
+                    if resp_tg.status in (200, 301, 302):
+                        tg_ok = True
+                        tg_ms = int(round((time.time() - t1) * 1000))
+            except Exception:
+                pass
+
+            srv.google_ok = google_ok
+            srv.tg_ok = tg_ok
+
+            if tg_ok:
+                # Обе проверки пройдены!
+                srv.ping_ms = tg_ms
+                srv.ping_status = f"{tg_ms} ms"
+            else:
+                # Google ответил, но Telegram заблокирован / недоступен
+                srv.ping_ms = None
+                srv.ping_status = "TG недоступен"
 
         with ThreadPoolExecutor(max_workers=min(30, len(port_map))) as executor:
-            futures = [executor.submit(probe_single, srv, port_map[srv]) for srv in port_map]
+            futures = [executor.submit(probe_double, srv, port_map[srv]) for srv in port_map]
             for fut in as_completed(futures):
                 completed += 1
                 if on_progress:

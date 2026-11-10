@@ -170,7 +170,7 @@ class OUVPNPanelApp:
         # Кнопка: Проверить пинг
         self.btn_ping = tk.Button(
             action_bar,
-            text="⚡ Проверить пинг (HTTP 204)",
+            text="⚡ Проверить пинг (Google + TG)",
             font=("Segoe UI", 10, "bold"),
             bg="#3b2b5e",
             fg="#e9d5ff",
@@ -301,7 +301,7 @@ class OUVPNPanelApp:
         self.tree.heading("sel", text="Статус выбора", anchor="center")
         self.tree.heading("name", text="Название сервера для ouvpn.txt", anchor="w")
         self.tree.heading("country", text="Страна", anchor="center")
-        self.tree.heading("ping", text="Пинг (HTTP 204)", anchor="center")
+        self.tree.heading("ping", text="Пинг (Google + TG)", anchor="center")
         self.tree.heading("fast", text="Скоростной", anchor="center")
 
         self.tree.column("id", width=65, anchor="center")
