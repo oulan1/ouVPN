@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 ouVPN Core Engine
-Общий модуль: парсинг конфигов, извлечение метаданных, генерация имен,
+Общий модуль: парсинг конфигов (ТОЛЬКО VLESS), извлечение метаданных, генерация имен (#ID | Country ouVPN V2),
 проверка пинга через Xray (HTTP GET generate_204) и сортировка серверов.
 """
 
@@ -27,7 +27,8 @@ PING_TEST_URL = "http://www.gstatic.com/generate_204"
 # Регулярка для извлечения эмодзи-флагов стран
 FLAG_RE = re.compile(r'[\U0001F1E6-\U0001F1FF]{2}')
 
-VPN_SCHEMES = ("vless://", "vmess://", "trojan://", "ss://", "ssr://", "hysteria2://", "hy2://", "tuic://")
+# Оставляем ТОЛЬКО VLESS протокол
+VPN_SCHEMES = ("vless://",)
 
 # Список двухбуквенных кодов европейских государств (без России и без условного "EU")
 EUROPEAN_COUNTRIES = {
@@ -113,7 +114,7 @@ def fetch_source_configs(url: str = SOURCE_URL, timeout: int = 30) -> list[str]:
 
 
 def parse_source_metadata(lines: list[str]) -> dict:
-    """Извлекает метаданные из шапки исходного файла (количество серверов, время обновления)."""
+    """Извлекает метаданные из шапки исходного файла."""
     meta = {
         "source_count": 0,
         "source_update_time": "Неизвестно",
@@ -125,22 +126,16 @@ def parse_source_metadata(lines: list[str]) -> dict:
         line_clean = line.lstrip("#").strip()
         if line_clean.startswith("announce:"):
             text = line_clean.split("announce:", 1)[1].strip()
-            # Поиск даты и времени в анонсе
             m_time = re.search(r'(\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2})', text)
             if m_time:
                 meta["source_update_time"] = m_time.group(1)
             else:
                 meta["source_update_time"] = text[:60]
-            m_count = re.search(r'Серверов:\s*(\d+)', text)
-            if m_count:
-                meta["source_count"] = int(m_count.group(1))
         elif line_clean.startswith("profile-title:"):
             meta["source_title"] = line_clean.split("profile-title:", 1)[1].strip()
 
-    # Если в анонсе не нашли количество, считаем VPN строки
-    if meta["source_count"] == 0:
-        meta["source_count"] = sum(1 for l in lines if any(l.startswith(s) for s in VPN_SCHEMES))
-
+    # Считаем количество ТОЛЬКО VLESS серверов
+    meta["source_count"] = sum(1 for l in lines if l.startswith("vless://"))
     return meta
 
 
@@ -155,11 +150,11 @@ def extract_flag_and_country(raw_name: str) -> tuple[str | None, str | None]:
 
 
 class ServerItem:
-    """Класс представления одного VPN-сервера."""
+    """Класс представления одного VPN-сервера (только VLESS)."""
     def __init__(self, raw_url: str, source_id: int):
         self.raw_url = raw_url
-        self.source_id = source_id  # 1-based порядковый номер в источнике
-        self.scheme = raw_url.split("://", 1)[0].lower() if "://" in raw_url else "unknown"
+        self.source_id = source_id  # 1-based порядковый номер Vless в источнике
+        self.scheme = "vless"
         
         # Извлечение старого названия
         self.old_name = self._extract_old_name()
@@ -180,49 +175,29 @@ class ServerItem:
     def _extract_old_name(self) -> str:
         if "#" in self.raw_url:
             return urllib.parse.unquote(self.raw_url.split("#", 1)[1])
-        if self.raw_url.startswith("vmess://"):
-            b64 = self.raw_url[8:].split("#", 1)[0]
-            pad = len(b64) % 4
-            if pad:
-                b64 += "=" * (4 - pad)
-            try:
-                d = json.loads(base64.b64decode(b64).decode("utf-8", errors="ignore"))
-                return d.get("ps", "")
-            except Exception:
-                pass
         return ""
 
     def get_display_name(self) -> str:
-        """Возвращает отформатированное имя по шаблону пользователя."""
+        """
+        Возвращает отформатированное имя по шаблону:
+        #ID | Country Flag ouVPN V2 (и опционально ⚡)
+        #ID | 🇪🇺 Обход №N (и опционально ⚡)
+        """
         fast_mark = " ⚡" if self.is_fast else ""
         if self.is_bypass:
             num = self.eu_num if self.eu_num > 0 else self.source_id
             flag = self.flag or "🇪🇺"
-            return f"{flag} Обход №{num}{fast_mark} | #{self.source_id}"
+            return f"#{self.source_id} | {flag} Обход №{num}{fast_mark}"
         elif self.country_code and self.flag:
-            return f"{self.country_code} {self.flag} ouVPN V2{fast_mark} | #{self.source_id}"
+            return f"#{self.source_id} | {self.country_code} {self.flag} ouVPN V2{fast_mark}"
         else:
-            return f"🌐 ouVPN V2{fast_mark} | #{self.source_id}"
+            return f"#{self.source_id} | 🌐 ouVPN V2{fast_mark}"
 
     def build_export_url(self) -> str:
         """Собирает итоговый URL конфига с новым именем."""
         new_name = self.get_display_name()
-        # Для URL фрагмента: пробелы в %20, решетку в %23 для корректности
+        # Для URL фрагмента: пробелы в %20, решетку в %23
         encoded_name = new_name.replace(" ", "%20").replace("#", "%23")
-        
-        if self.raw_url.startswith("vmess://"):
-            b64_part = self.raw_url[8:].split("#", 1)[0]
-            pad = len(b64_part) % 4
-            if pad:
-                b64_part += "=" * (4 - pad)
-            try:
-                d = json.loads(base64.b64decode(b64_part).decode("utf-8", errors="ignore"))
-                d["ps"] = new_name
-                new_b64 = base64.b64encode(json.dumps(d, ensure_ascii=False).encode("utf-8")).decode("ascii")
-                return f"vmess://{new_b64}#{encoded_name}"
-            except Exception:
-                pass
-
         base_url = self.raw_url.split("#", 1)[0]
         return f"{base_url}#{encoded_name}"
 
@@ -244,7 +219,7 @@ class ServerItem:
 
 
 def parse_all_servers(lines: list[str]) -> list[ServerItem]:
-    """Парсит строки в список объектов ServerItem."""
+    """Парсит строки в список объектов ServerItem (ТОЛЬКО VLESS, остальные отсеиваются)."""
     servers = []
     source_counter = 0
     eu_counter = 0
@@ -252,8 +227,10 @@ def parse_all_servers(lines: list[str]) -> list[ServerItem]:
     for line in lines:
         if line.startswith("#"):
             continue
-        if not any(line.startswith(s) for s in VPN_SCHEMES):
+        # Фильтруем: оставляем ТОЛЬКО vless://
+        if not line.startswith("vless://"):
             continue
+            
         source_counter += 1
         item = ServerItem(line, source_counter)
         if item.is_bypass:
@@ -265,133 +242,69 @@ def parse_all_servers(lines: list[str]) -> list[ServerItem]:
 
 
 def convert_item_to_xray_outbound(item: ServerItem, tag: str) -> dict | None:
-    """Конвертирует ServerItem в исходящий узел Xray (outbound)."""
+    """Конвертирует VLESS ServerItem в исходящий узел Xray (outbound)."""
     link = item.raw_url
-    scheme = item.scheme
     p = urllib.parse.urlparse(link)
 
     try:
-        if scheme == "vless":
-            userinfo, hostport = p.netloc.split("@", 1)
-            host, port = (hostport.split(":", 1) if ":" in hostport else (hostport, "443"))
-            q = urllib.parse.parse_qs(p.query)
-            getq = lambda k, d="": q.get(k, [d])[0]
+        userinfo, hostport = p.netloc.split("@", 1)
+        host, port = (hostport.split(":", 1) if ":" in hostport else (hostport, "443"))
+        q = urllib.parse.parse_qs(p.query)
+        getq = lambda k, d="": q.get(k, [d])[0]
 
-            outbound = {
-                "tag": tag,
-                "protocol": "vless",
-                "settings": {
-                    "vnext": [{
-                        "address": host,
-                        "port": int(port),
-                        "users": [{
-                            "id": userinfo,
-                            "encryption": getq("encryption", "none"),
-                            "flow": getq("flow", "")
-                        }]
+        outbound = {
+            "tag": tag,
+            "protocol": "vless",
+            "settings": {
+                "vnext": [{
+                    "address": host,
+                    "port": int(port),
+                    "users": [{
+                        "id": userinfo,
+                        "encryption": getq("encryption", "none"),
+                        "flow": getq("flow", "")
                     }]
-                },
-                "streamSettings": {
-                    "network": getq("type", "tcp"),
-                    "security": getq("security", "none")
-                }
+                }]
+            },
+            "streamSettings": {
+                "network": getq("type", "tcp"),
+                "security": getq("security", "none")
             }
-            sec = getq("security")
-            if sec == "reality":
-                outbound["streamSettings"]["realitySettings"] = {
-                    "serverName": getq("sni"),
-                    "fingerprint": getq("fp", "chrome"),
-                    "publicKey": getq("pbk"),
-                    "shortId": getq("sid"),
-                    "spiderX": getq("spx")
-                }
-            elif sec == "tls":
-                outbound["streamSettings"]["tlsSettings"] = {
-                    "serverName": getq("sni"),
-                    "fingerprint": getq("fp", "chrome")
-                }
-
-            net = getq("type", "tcp")
-            if net == "ws":
-                outbound["streamSettings"]["wsSettings"] = {
-                    "path": getq("path", "/"),
-                    "headers": {"Host": getq("host", "")}
-                }
-            elif net == "grpc":
-                outbound["streamSettings"]["grpcSettings"] = {
-                    "serviceName": getq("serviceName", ""),
-                    "multiMode": getq("mode", "") == "multi"
-                }
-            elif net in ("xhttp", "http"):
-                outbound["streamSettings"]["httpSettings"] = {
-                    "path": getq("path", "/"),
-                    "host": [getq("host", "")] if getq("host") else []
-                }
-            return outbound
-
-        elif scheme == "vmess":
-            b64 = link[8:].split("#", 1)[0]
-            pad = len(b64) % 4
-            if pad:
-                b64 += "=" * (4 - pad)
-            d = json.loads(base64.b64decode(b64).decode("utf-8", errors="ignore"))
-
-            outbound = {
-                "tag": tag,
-                "protocol": "vmess",
-                "settings": {
-                    "vnext": [{
-                        "address": d.get("add", ""),
-                        "port": int(d.get("port", 443)),
-                        "users": [{
-                            "id": d.get("id", ""),
-                            "alterId": int(d.get("aid", 0)),
-                            "security": d.get("scy", "auto")
-                        }]
-                    }]
-                },
-                "streamSettings": {
-                    "network": d.get("net", "tcp"),
-                    "security": d.get("tls", "none")
-                }
+        }
+        sec = getq("security")
+        if sec == "reality":
+            outbound["streamSettings"]["realitySettings"] = {
+                "serverName": getq("sni"),
+                "fingerprint": getq("fp", "chrome"),
+                "publicKey": getq("pbk"),
+                "shortId": getq("sid"),
+                "spiderX": getq("spx")
             }
-            if d.get("tls") == "tls":
-                outbound["streamSettings"]["tlsSettings"] = {
-                    "serverName": d.get("sni", ""),
-                    "fingerprint": "chrome"
-                }
-            net = d.get("net", "tcp")
-            if net == "ws":
-                outbound["streamSettings"]["wsSettings"] = {
-                    "path": d.get("path", "/"),
-                    "headers": {"Host": d.get("host", "")}
-                }
-            elif net == "grpc":
-                outbound["streamSettings"]["grpcSettings"] = {
-                    "serviceName": d.get("path", "")
-                }
-            return outbound
-
-        elif scheme == "trojan":
-            userinfo, hostport = p.netloc.split("@", 1)
-            host, port = (hostport.split(":", 1) if ":" in hostport else (hostport, "443"))
-            q = urllib.parse.parse_qs(p.query)
-            getq = lambda k, d="": q.get(k, [d])[0]
-            return {
-                "tag": tag,
-                "protocol": "trojan",
-                "settings": {
-                    "servers": [{"address": host, "port": int(port), "password": userinfo}]
-                },
-                "streamSettings": {
-                    "network": getq("type", "tcp"),
-                    "security": getq("security", "tls"),
-                    "tlsSettings": {"serverName": getq("sni", host)}
-                }
+        elif sec == "tls":
+            outbound["streamSettings"]["tlsSettings"] = {
+                "serverName": getq("sni"),
+                "fingerprint": getq("fp", "chrome")
             }
+
+        net = getq("type", "tcp")
+        if net == "ws":
+            outbound["streamSettings"]["wsSettings"] = {
+                "path": getq("path", "/"),
+                "headers": {"Host": getq("host", "")}
+            }
+        elif net == "grpc":
+            outbound["streamSettings"]["grpcSettings"] = {
+                "serviceName": getq("serviceName", ""),
+                "multiMode": getq("mode", "") == "multi"
+            }
+        elif net in ("xhttp", "http"):
+            outbound["streamSettings"]["httpSettings"] = {
+                "path": getq("path", "/"),
+                "host": [getq("host", "")] if getq("host") else []
+            }
+        return outbound
     except Exception:
         return None
-    return None
 
 
 def test_servers_ping_xray(
@@ -497,7 +410,6 @@ def test_servers_ping_xray(
                 else:
                     srv.ping_status = "Не отвечает"
 
-        # Параллельный HTTP запрос ко всем серверам пачки
         with ThreadPoolExecutor(max_workers=min(30, len(port_map))) as executor:
             futures = [executor.submit(probe_single, srv, port_map[srv]) for srv in port_map]
             for fut in as_completed(futures):
@@ -526,7 +438,6 @@ def sort_servers_by_user_rules(servers: list[ServerItem]) -> list[ServerItem]:
     """
     def sort_key(s: ServerItem):
         cat = s.get_category_priority()
-        # Для пинга: серверам с пингом отдаём приоритет, серверам без пинга ставим 999999
         ping_val = s.ping_ms if s.ping_ms is not None else 999999
         return (cat, ping_val, s.source_id)
 
@@ -586,7 +497,6 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None) ->
 
     sorted_list = sort_servers_by_user_rules(selected_servers)
 
-    # Чтение шаблона шапки
     default_template = (
         "# profile-title: 🟢 𝗼𝘂𝗩𝗣𝗡 V2\n"
         "# profile-update-interval: {interval}\n"
@@ -613,10 +523,8 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None) ->
     if on_status:
         on_status(f"Файл ouvpn.txt записан ({len(sorted_list)} серв.). Отправка на GitHub...")
 
-    # Git commit & push
     try:
         subprocess.run(["git", "add", "ouvpn.txt"], cwd=base_dir, check=True)
-        # Проверяем наличие изменений
         diff_res = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=base_dir)
         if diff_res.returncode != 0:
             commit_msg = f"Обновление рабочих серверов ouVPN [{len(sorted_list)} шт.] [skip ci]"
