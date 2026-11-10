@@ -3,11 +3,14 @@
 """
 ouVPN Core Engine
 Общий модуль:
-- Парсинг конфигов ТОЛЬКО VLESS из четырех источников:
+- Парсинг конфигов ТОЛЬКО VLESS из семи источников:
   1) VlessForU (bobrinaw)
   2) BlackVlessRus (igareck)
   3) FreeVpnAntiRkn (Hidashimora)
   4) WLUnlocker (blacklist_vpn1)
+  5) WhiteCidrRu (igareck)
+  6) BlackVlessRusMobile (igareck)
+  7) AviaMasters (verified_configs)
 - Тройная проверка доступности:
   1) Google (http://www.gstatic.com/generate_204)
   2) Telegram (https://t.me)
@@ -39,7 +42,10 @@ SOURCE_URLS = [
     "https://raw.githubusercontent.com/bobrinaw/vlessforu/refs/heads/main/working_configs.txt",
     "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/BLACK_VLESS_RUS.txt",
     "https://raw.githubusercontent.com/Hidashimora/free-vpn-anti-rkn/refs/heads/main/configs/1.1.txt",
-    "https://raw.githubusercontent.com/wlunlocker/vpn-configs/main/blacklist_vpn1.txt"
+    "https://raw.githubusercontent.com/wlunlocker/vpn-configs/main/blacklist_vpn1.txt",
+    "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/WHITE-CIDR-RU-checked.txt",
+    "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/BLACK_VLESS_RUS_mobile.txt",
+    "https://raw.githubusercontent.com/aviamastersgh/vpn-free-russia/refs/heads/main/verified_configs.txt"
 ]
 
 # Адреса для трехэтапной проверки
