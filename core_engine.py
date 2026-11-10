@@ -3,14 +3,16 @@
 """
 ouVPN Core Engine
 Общий модуль:
-- Парсинг конфигов ТОЛЬКО VLESS из двух источников:
+- Парсинг конфигов ТОЛЬКО VLESS из трех источников:
   1) VlessForU (bobrinaw)
   2) BlackVlessRus (igareck)
+  3) FreeVpnAntiRkn (Hidashimora)
 - Двойная проверка доступности:
   1) Google (http://www.gstatic.com/generate_204)
   2) Telegram (https://t.me)
 - Генерация названий с #ID в начале: #ID | Country ouVPN V2 (и ⚡ для скоростных)
 - Сортировка: Европа ➔ Другие страны ➔ Россия (RU) ➔ Обходы (EU)
+- Надёжный авто-sync при push на GitHub без ошибок non-fast-forward
 """
 
 import os
@@ -31,7 +33,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # Список источников VLESS конфигов
 SOURCE_URLS = [
     "https://raw.githubusercontent.com/bobrinaw/vlessforu/refs/heads/main/working_configs.txt",
-    "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/BLACK_VLESS_RUS.txt"
+    "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/BLACK_VLESS_RUS.txt",
+    "https://raw.githubusercontent.com/Hidashimora/free-vpn-anti-rkn/refs/heads/main/configs/1.1.txt"
 ]
 
 # Адреса для двухэтапной проверки
@@ -125,7 +128,6 @@ def fetch_source_configs(urls: list[str] = None, timeout: int = 30) -> list[str]
     seen_bases = set()
 
     for url in urls:
-        # Корректируем возможные опечатки в URL
         clean_url = url
         if "refs/BLACK_VLESS_RUS.txt" in clean_url:
             clean_url = clean_url.replace("refs/BLACK_VLESS_RUS.txt", "main/BLACK_VLESS_RUS.txt")
@@ -162,7 +164,6 @@ def parse_source_metadata(lines: list[str]) -> dict:
         "source_title": "ouVPN VLESS Bundle"
     }
     
-    # Ищем самую свежую дату в анонсах
     for line in lines:
         if not line.startswith("#"):
             continue
@@ -172,7 +173,6 @@ def parse_source_metadata(lines: list[str]) -> dict:
             if m_time:
                 meta["source_update_time"] = m_time.group(1)
 
-    # Считаем количество ТОЛЬКО уникальных VLESS серверов
     meta["source_count"] = sum(1 for l in lines if l.startswith("vless://"))
     return meta
 
@@ -191,22 +191,18 @@ class ServerItem:
     """Класс представления одного VPN-сервера (только VLESS)."""
     def __init__(self, raw_url: str, source_id: int):
         self.raw_url = raw_url
-        self.source_id = source_id  # 1-based порядковый номер Vless в объединенном списке
+        self.source_id = source_id
         self.scheme = "vless"
         
-        # Извлечение старого названия
         self.old_name = self._extract_old_name()
         self.flag, self.country_code = extract_flag_and_country(self.old_name)
         
-        # ЕС обход?
         self.is_bypass = (self.country_code == "EU" or "обход" in self.old_name.lower())
-        self.eu_num = 0  # Присваивается при упорядочивании
+        self.eu_num = 0
         
-        # Пользовательские свойства в GUI
         self.selected = True
-        self.is_fast = False  # Отметка ⚡ (золотая строка)
+        self.is_fast = False
         
-        # Данные двухэтапной проверки
         self.google_ok = False
         self.tg_ok = False
         self.ping_ms = None
@@ -218,11 +214,6 @@ class ServerItem:
         return ""
 
     def get_display_name(self) -> str:
-        """
-        Возвращает отформатированное имя по шаблону:
-        #ID | Country Flag ouVPN V2 (и опционально ⚡)
-        #ID | 🇪🇺 Обход №N (и опционально ⚡)
-        """
         fast_mark = " ⚡" if self.is_fast else ""
         if self.is_bypass:
             num = self.eu_num if self.eu_num > 0 else self.source_id
@@ -234,21 +225,12 @@ class ServerItem:
             return f"#{self.source_id} | 🌐 ouVPN V2{fast_mark}"
 
     def build_export_url(self) -> str:
-        """Собирает итоговый URL конфига с новым именем."""
         new_name = self.get_display_name()
-        # Для URL фрагмента: пробелы в %20, решетку в %23
         encoded_name = new_name.replace(" ", "%20").replace("#", "%23")
         base_url = self.raw_url.split("#", 1)[0]
         return f"{base_url}#{encoded_name}"
 
     def get_category_priority(self) -> int:
-        """
-        Категория расположения серверов:
-        1 - Европейские страны (не Россия)
-        2 - Другие страны мира (US, CA, TR, AE и т.д.)
-        3 - Россия (RU)
-        4 - Обходы (EU / Обход)
-        """
         if self.is_bypass:
             return 4
         if self.country_code == "RU":
@@ -478,11 +460,9 @@ def test_servers_ping_xray(
             srv.tg_ok = tg_ok
 
             if tg_ok:
-                # Обе проверки пройдены!
                 srv.ping_ms = tg_ms
                 srv.ping_status = f"{tg_ms} ms"
             else:
-                # Google ответил, но Telegram заблокирован / недоступен
                 srv.ping_ms = None
                 srv.ping_status = "TG недоступен"
 
@@ -560,6 +540,7 @@ def render_heading_text(heading_template: str, count: int, interval: int = 1) ->
 def save_and_push_servers(selected_servers: list[ServerItem], on_status=None) -> tuple[bool, str]:
     """
     Сортирует выбранные сервера, формирует ouvpn.txt, коммитит и пушит на GitHub.
+    Автоматически синхронизирует ветку с origin/main перед записью, предотвращая ошибки non-fast-forward.
     """
     base_dir = get_base_dir()
     heading_file = os.path.join(base_dir, "heading.txt")
@@ -567,6 +548,23 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None) ->
 
     if not selected_servers:
         return False, "Не выбрано ни одного сервера для сохранения!"
+
+    if on_status:
+        on_status("Синхронизация с GitHub перед публикацией...")
+
+    # 1. Отменяем любые зависшие rebase / merge в локальном репозитории
+    try:
+        subprocess.run(["git", "rebase", "--abort"], cwd=base_dir, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["git", "merge", "--abort"], cwd=base_dir, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except Exception:
+        pass
+
+    # 2. Получаем актуальный origin/main и аккуратно выравниваем HEAD
+    try:
+        subprocess.run(["git", "fetch", "origin", "main"], cwd=base_dir, check=True)
+        subprocess.run(["git", "reset", "--mixed", "origin/main"], cwd=base_dir, check=True)
+    except Exception as ex:
+        return False, f"Ошибка синхронизации с GitHub (fetch/reset): {ex}"
 
     if on_status:
         on_status("Сортировка серверов по правилам (Европа ➔ Другие ➔ РФ ➔ Обходы)...")
@@ -601,16 +599,17 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None) ->
 
     try:
         subprocess.run(["git", "add", "ouvpn.txt"], cwd=base_dir, check=True)
-        diff_res = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=base_dir)
-        if diff_res.returncode != 0:
-            commit_msg = f"Обновление рабочих серверов ouVPN [{len(sorted_list)} шт.] [skip ci]"
-            subprocess.run(["git", "commit", "-m", commit_msg], cwd=base_dir, check=True)
-            subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=base_dir)
-            push_res = subprocess.run(["git", "push", "origin", "main"], cwd=base_dir, capture_output=True, text=True)
-            if push_res.returncode != 0:
-                return False, f"Ошибка при push на GitHub: {push_res.stderr.strip()}"
-        else:
-            return True, f"Сервера ({len(sorted_list)} шт.) сохранены. Файл ouvpn.txt уже актуален на GitHub."
+        commit_msg = f"Ручное обновление рабочих серверов ouVPN [{len(sorted_list)} шт.] [skip ci]"
+        subprocess.run(["git", "commit", "-m", commit_msg], cwd=base_dir, check=True)
+        
+        # Отправляем в репозиторий
+        push_res = subprocess.run(["git", "push", "origin", "main"], cwd=base_dir, capture_output=True, text=True)
+        if push_res.returncode != 0:
+            # На случай конкурентного коммита — выполняем rebase с приоритетом нашего ouvpn.txt
+            subprocess.run(["git", "pull", "--rebase", "-X", "theirs", "origin", "main"], cwd=base_dir)
+            push_res2 = subprocess.run(["git", "push", "origin", "main"], cwd=base_dir, capture_output=True, text=True)
+            if push_res2.returncode != 0:
+                return False, f"Ошибка при push на GitHub:\n{push_res2.stderr.strip()}"
 
         return True, f"Успешно сохранено и отправлено на GitHub! Всего серверов: {len(sorted_list)}"
     except Exception as ex:
