@@ -3,13 +3,16 @@
 """
 ouVPN Core Engine
 Общий модуль:
-- Парсинг конфигов ТОЛЬКО VLESS из трех источников:
+- Парсинг конфигов ТОЛЬКО VLESS из четырех источников:
   1) VlessForU (bobrinaw)
   2) BlackVlessRus (igareck)
   3) FreeVpnAntiRkn (Hidashimora)
-- Двойная проверка доступности:
+  4) WLUnlocker (blacklist_vpn1)
+- Тройная проверка доступности:
   1) Google (http://www.gstatic.com/generate_204)
   2) Telegram (https://t.me)
+  3) Discord (https://discord.com/)
+  В пинге выводится средний пинг за 3 проверки!
 - Генерация названий с #ID в начале: #ID | Country ouVPN V2 (и ⚡ для скоростных)
 - Сортировка: Европа ➔ Другие страны ➔ Россия (RU) ➔ Обходы (EU)
 - Надёжный авто-sync при push на GitHub без ошибок non-fast-forward
@@ -18,6 +21,7 @@ ouVPN Core Engine
 import os
 import sys
 import re
+import ssl
 import json
 import base64
 import time
@@ -34,12 +38,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 SOURCE_URLS = [
     "https://raw.githubusercontent.com/bobrinaw/vlessforu/refs/heads/main/working_configs.txt",
     "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/BLACK_VLESS_RUS.txt",
-    "https://raw.githubusercontent.com/Hidashimora/free-vpn-anti-rkn/refs/heads/main/configs/1.1.txt"
+    "https://raw.githubusercontent.com/Hidashimora/free-vpn-anti-rkn/refs/heads/main/configs/1.1.txt",
+    "https://raw.githubusercontent.com/wlunlocker/vpn-configs/main/blacklist_vpn1.txt"
 ]
 
-# Адреса для двухэтапной проверки
+# Адреса для трехэтапной проверки
 PING_TEST_URL_GOOGLE = "http://www.gstatic.com/generate_204"
 PING_TEST_URL_TELEGRAM = "https://t.me"
+PING_TEST_URL_DISCORD = "https://discord.com/"
 
 # Регулярка для извлечения эмодзи-флагов стран
 FLAG_RE = re.compile(r'[\U0001F1E6-\U0001F1FF]{2}')
@@ -129,6 +135,9 @@ def fetch_source_configs(urls: list[str] = None, timeout: int = 30) -> list[str]
 
     for url in urls:
         clean_url = url
+        # Автоматическая конвертация github.com/.../blob/... в raw.githubusercontent.com/...
+        if "github.com/" in clean_url and "/blob/" in clean_url:
+            clean_url = clean_url.replace("github.com/", "raw.githubusercontent.com/").replace("/blob/", "/")
         if "refs/BLACK_VLESS_RUS.txt" in clean_url:
             clean_url = clean_url.replace("refs/BLACK_VLESS_RUS.txt", "main/BLACK_VLESS_RUS.txt")
 
@@ -203,8 +212,10 @@ class ServerItem:
         self.selected = True
         self.is_fast = False
         
+        # Данные трехэтапной проверки (Google + TG + Discord)
         self.google_ok = False
         self.tg_ok = False
+        self.discord_ok = False
         self.ping_ms = None
         self.ping_status = "не проверен"
         
@@ -342,10 +353,12 @@ def test_servers_ping_xray(
     stop_event: threading.Event = None
 ):
     """
-    Двойная проверка доступности через Xray:
+    Тройная проверка доступности через Xray:
     1) HTTP GET на Google (gstatic generate_204)
     2) HTTPS GET на Telegram (https://t.me)
-    Сервер считается рабочим только если ОБЕ проверки успешны!
+    3) HTTPS GET на Discord (https://discord.com/)
+    Сервер считается рабочим только если ВСЕ ТРИ проверки успешны!
+    В поле ping выводится средний пинг за 3 проверки.
     """
     xray_path = ensure_xray_binary()
     core_dir = get_core_dir()
@@ -408,14 +421,20 @@ def test_servers_ping_xray(
         )
         time.sleep(0.8)
 
-        def probe_double(srv: ServerItem, port_num: int):
+        def probe_triple(srv: ServerItem, port_num: int):
             if stop_event and stop_event.is_set():
                 return
             proxy_handler = urllib.request.ProxyHandler({
                 "http": f"http://127.0.0.1:{port_num}",
                 "https": f"http://127.0.0.1:{port_num}"
             })
-            opener = urllib.request.build_opener(proxy_handler)
+            ssl_ctx = ssl.create_default_context()
+            ssl_ctx.check_hostname = False
+            ssl_ctx.verify_mode = ssl.CERT_NONE
+            opener = urllib.request.build_opener(
+                proxy_handler,
+                urllib.request.HTTPSHandler(context=ssl_ctx)
+            )
             
             # --- Этап 1: Проверка Google (generate_204) ---
             google_ok = False
@@ -436,6 +455,7 @@ def test_servers_ping_xray(
             if not google_ok:
                 srv.google_ok = False
                 srv.tg_ok = False
+                srv.discord_ok = False
                 srv.ping_ms = None
                 srv.ping_status = "Таймаут (Google)"
                 return
@@ -447,7 +467,7 @@ def test_servers_ping_xray(
             try:
                 req_tg = urllib.request.Request(
                     PING_TEST_URL_TELEGRAM,
-                    headers={"User-Agent": "Mozilla/5.0"}
+                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
                 )
                 with opener.open(req_tg, timeout=timeout) as resp_tg:
                     if resp_tg.status in (200, 301, 302):
@@ -456,18 +476,47 @@ def test_servers_ping_xray(
             except Exception:
                 pass
 
-            srv.google_ok = google_ok
-            srv.tg_ok = tg_ok
-
-            if tg_ok:
-                srv.ping_ms = tg_ms
-                srv.ping_status = f"{tg_ms} ms"
-            else:
+            if not tg_ok:
+                srv.google_ok = True
+                srv.tg_ok = False
+                srv.discord_ok = False
                 srv.ping_ms = None
                 srv.ping_status = "TG недоступен"
+                return
+
+            # --- Этап 3: Проверка Discord (https://discord.com/) ---
+            discord_ok = False
+            dc_ms = 0
+            t2 = time.time()
+            try:
+                req_dc = urllib.request.Request(
+                    PING_TEST_URL_DISCORD,
+                    headers={
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                    }
+                )
+                with opener.open(req_dc, timeout=timeout) as resp_dc:
+                    if resp_dc.status in (200, 204, 301, 302, 307, 308):
+                        discord_ok = True
+                        dc_ms = int(round((time.time() - t2) * 1000))
+            except Exception:
+                pass
+
+            srv.google_ok = True
+            srv.tg_ok = True
+            srv.discord_ok = discord_ok
+
+            if discord_ok:
+                # Средний пинг за 3 успешные проверки
+                avg_ms = int(round((g_ms + tg_ms + dc_ms) / 3.0))
+                srv.ping_ms = avg_ms
+                srv.ping_status = f"{avg_ms} ms"
+            else:
+                srv.ping_ms = None
+                srv.ping_status = "Discord недоступен"
 
         with ThreadPoolExecutor(max_workers=min(30, len(port_map))) as executor:
-            futures = [executor.submit(probe_double, srv, port_map[srv]) for srv in port_map]
+            futures = [executor.submit(probe_triple, srv, port_map[srv]) for srv in port_map]
             for fut in as_completed(futures):
                 completed += 1
                 if on_progress:

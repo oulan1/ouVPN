@@ -170,7 +170,7 @@ class OUVPNPanelApp:
         # Кнопка: Проверить пинг
         self.btn_ping = tk.Button(
             action_bar,
-            text="⚡ Проверить пинг (Google + TG)",
+            text="⚡ Проверить пинг (Google + TG + Discord)",
             font=("Segoe UI", 10, "bold"),
             bg="#3b2b5e",
             fg="#e9d5ff",
@@ -301,14 +301,14 @@ class OUVPNPanelApp:
         self.tree.heading("sel", text="Статус выбора", anchor="center")
         self.tree.heading("name", text="Название сервера для ouvpn.txt", anchor="w")
         self.tree.heading("country", text="Страна", anchor="center")
-        self.tree.heading("ping", text="Пинг (Google + TG)", anchor="center")
+        self.tree.heading("ping", text="Ср. пинг (3 проверки)", anchor="center")
         self.tree.heading("fast", text="Скоростной", anchor="center")
 
         self.tree.column("id", width=65, anchor="center")
         self.tree.column("sel", width=120, anchor="center")
-        self.tree.column("name", width=550, anchor="w")
+        self.tree.column("name", width=530, anchor="w")
         self.tree.column("country", width=90, anchor="center")
-        self.tree.column("ping", width=140, anchor="center")
+        self.tree.column("ping", width=165, anchor="center")
         self.tree.column("fast", width=100, anchor="center")
 
         # Настройка цветовых тегов подсветки строк
@@ -601,7 +601,7 @@ class OUVPNPanelApp:
         def on_prog(completed, total):
             def ui_update():
                 self.prog_bar["value"] = completed
-                self.set_status(f"Проверка пинга: {completed} из {total}...")
+                self.set_status(f"Проверка пинга (Google + TG + Discord): {completed} из {total}...")
                 for srv in self.servers:
                     iid = str(srv.source_id)
                     if self.tree.exists(iid):
