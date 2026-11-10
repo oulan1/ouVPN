@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Xray binary and downloaded archives
+core/
+xray.exe
+xray
+*.zip
+*.dgst
+temp_*.json
+test_cfg_*.json
+multi_test.json
