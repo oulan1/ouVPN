@@ -32,7 +32,9 @@ class OUVPNPanelApp:
 
         # Список серверов в памяти
         self.servers: list[ServerItem] = []
-        self.displayed_servers: list[ServerItem] = []
+        
+        # Таймер для устранения конфликта одиночного клика и дабл-клика
+        self._single_click_timer = None
         
         # Потоки и остановка
         self.ping_thread = None
@@ -55,14 +57,18 @@ class OUVPNPanelApp:
         self.c_card_border = "#2e224d"
         self.c_primary = "#8b5cf6"
         self.c_primary_hover = "#a78bfa"
-        self.c_gold = "#f59e0b"
-        self.c_gold_bg = "#35290a"
-        self.c_green = "#10b981"
-        self.c_red = "#ef4444"
         self.c_text = "#f8fafc"
         self.c_muted = "#94a3b8"
         self.c_table_bg = "#191522"
-        self.c_table_row2 = "#14111c"
+
+        # Цвета состояний строк
+        self.c_purple_bg = "#2e1a4d"      # Фиолетовый фон для выбранного сервера
+        self.c_unsel_bg = "#131019"       # Тёмный приглушенный фон для невыбранного сервера
+        self.c_unsel_fg = "#6b6478"       # Текст невыбранного сервера
+        self.c_gold_bg = "#3f2e08"        # Золотой фон для скоростного ⚡ сервера
+        self.c_gold_fg = "#fef08a"        # Золотой текст
+        self.c_green = "#6ee7b7"          # Зелёный (онлайн)
+        self.c_red = "#fca5a5"            # Красный (таймаут/ошибка)
 
         # Стили элементов TTK
         self.style.configure(".", background=self.c_bg, foreground=self.c_text)
@@ -73,7 +79,7 @@ class OUVPNPanelApp:
             background=self.c_table_bg,
             foreground=self.c_text,
             fieldbackground=self.c_table_bg,
-            rowheight=28,
+            rowheight=30,
             font=("Segoe UI", 10),
             borderwidth=0
         )
@@ -91,7 +97,7 @@ class OUVPNPanelApp:
         )
         self.style.map(
             "Custom.Treeview",
-            background=[("selected", "#3b2b5e")],
+            background=[("selected", "#442770")],
             foreground=[("selected", "#ffffff")]
         )
 
@@ -124,7 +130,7 @@ class OUVPNPanelApp:
 
         sub_lbl = tk.Label(
             title_box,
-            text="Ручной отбор рабочих серверов и быстрая публикация на GitHub",
+            text="Ручной отбор рабочих VLESS серверов и быстрая публикация на GitHub",
             font=("Segoe UI", 9),
             bg=self.c_bg,
             fg=self.c_muted
@@ -135,7 +141,7 @@ class OUVPNPanelApp:
         stats_box = tk.Frame(top_frame, bg=self.c_bg)
         stats_box.pack(side="right")
 
-        self.card_total = self._create_stat_card(stats_box, "Всего в источнике", "0")
+        self.card_total = self._create_stat_card(stats_box, "VLESS в источнике", "0")
         self.card_updated = self._create_stat_card(stats_box, "Обновление источника", "--")
         self.card_selected = self._create_stat_card(stats_box, "Выбрано для Push", "0", highlight=True)
 
@@ -292,25 +298,30 @@ class OUVPNPanelApp:
         )
 
         self.tree.heading("id", text="# ID", anchor="center")
-        self.tree.heading("sel", text="Выбор", anchor="center")
+        self.tree.heading("sel", text="Статус выбора", anchor="center")
         self.tree.heading("name", text="Название сервера для ouvpn.txt", anchor="w")
         self.tree.heading("country", text="Страна", anchor="center")
         self.tree.heading("ping", text="Пинг (HTTP 204)", anchor="center")
         self.tree.heading("fast", text="Скоростной", anchor="center")
 
         self.tree.column("id", width=65, anchor="center")
-        self.tree.column("sel", width=75, anchor="center")
+        self.tree.column("sel", width=120, anchor="center")
         self.tree.column("name", width=550, anchor="w")
         self.tree.column("country", width=90, anchor="center")
         self.tree.column("ping", width=140, anchor="center")
         self.tree.column("fast", width=100, anchor="center")
 
-        # Цветовые теги строк
-        self.tree.tag_configure("gold", background=self.c_gold_bg, foreground="#fef08a")
-        self.tree.tag_configure("even", background=self.c_table_bg)
-        self.tree.tag_configure("odd", background=self.c_table_row2)
-        self.tree.tag_configure("online", foreground="#34d399")
-        self.tree.tag_configure("dead", foreground="#f87171")
+        # Настройка цветовых тегов подсветки строк
+        # 1. Выбранные (фиолетовый фон)
+        self.tree.tag_configure("selected", background=self.c_purple_bg, foreground=self.c_text)
+        self.tree.tag_configure("selected_online", background=self.c_purple_bg, foreground=self.c_green)
+        self.tree.tag_configure("selected_dead", background=self.c_purple_bg, foreground=self.c_red)
+
+        # 2. Невыбранные (тёмно-серый приглушённый фон)
+        self.tree.tag_configure("unselected", background=self.c_unsel_bg, foreground=self.c_unsel_fg)
+
+        # 3. Скоростные (золотой фон)
+        self.tree.tag_configure("gold", background=self.c_gold_bg, foreground=self.c_gold_fg)
 
         # Скроллбар
         v_scroll = ttk.Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
@@ -338,10 +349,10 @@ class OUVPNPanelApp:
         )
         self.lbl_status.pack(side="left")
 
-        # Подсказка по дабл-тапу
+        # Подсказка по цветам
         hint_lbl = tk.Label(
             bottom_frame,
-            text="💡 Клик / Пробел = выбор. Двойной клик = золотой ⚡ скоростной.",
+            text="💡 1 клик = переключить выбор (фиолетовый). Двойной клик = золотой ⚡ скоростной.",
             font=("Segoe UI", 8),
             bg=self.c_card,
             fg=self.c_muted
@@ -384,17 +395,28 @@ class OUVPNPanelApp:
     # ----------------- Обработчики событий таблицы -----------------
 
     def _on_tree_click(self, event):
-        """Одиночный клик по строке для переключения чекбокса выбора."""
-        region = self.tree.identify_region(event.x, event.y)
+        """
+        Одиночный клик по любой части строки:
+        Переключает выбор сервера и делает фон фиолетовым / тёмным.
+        Используется задержка 220мс для устранения конфликта с double-click.
+        """
         item_id = self.tree.identify_row(event.y)
-        col = self.tree.identify_column(event.x)
         if not item_id:
             return
 
-        # Если кликнули по колонке 'sel' или прямо по строке
-        if col == "#2":  # колонка sel
-            self._toggle_selection_for_item_id(item_id)
-            return "break"
+        if self._single_click_timer:
+            self.root.after_cancel(self._single_click_timer)
+            self._single_click_timer = None
+
+        self._single_click_timer = self.root.after(220, lambda: self._handle_single_click(item_id))
+
+    def _handle_single_click(self, item_id: str):
+        self._single_click_timer = None
+        srv = self._find_server_by_item_id(item_id)
+        if srv:
+            srv.selected = not srv.selected
+            self._refresh_tree_row(item_id, srv)
+            self.update_selected_count()
 
     def _on_tree_space(self, event):
         """Нажатие Пробела переключает выбор выделенных строк."""
@@ -402,7 +424,11 @@ class OUVPNPanelApp:
         if not selected_items:
             return
         for item_id in selected_items:
-            self._toggle_selection_for_item_id(item_id)
+            srv = self._find_server_by_item_id(item_id)
+            if srv:
+                srv.selected = not srv.selected
+                self._refresh_tree_row(item_id, srv)
+        self.update_selected_count()
         return "break"
 
     def _on_tree_double_click(self, event):
@@ -410,6 +436,11 @@ class OUVPNPanelApp:
         Двойной клик переключает признак 'скоростной' (⚡)
         и выделяет строку золотым цветом.
         """
+        # Отменяем одиночный клик, чтобы не переключать выбор при дабл-клике
+        if self._single_click_timer:
+            self.root.after_cancel(self._single_click_timer)
+            self._single_click_timer = None
+
         item_id = self.tree.identify_row(event.y)
         if not item_id:
             return
@@ -418,17 +449,9 @@ class OUVPNPanelApp:
         if not srv:
             return
 
-        # Переключаем ⚡
         srv.is_fast = not srv.is_fast
         self._refresh_tree_row(item_id, srv)
         return "break"
-
-    def _toggle_selection_for_item_id(self, item_id):
-        srv = self._find_server_by_item_id(item_id)
-        if srv:
-            srv.selected = not srv.selected
-            self._refresh_tree_row(item_id, srv)
-            self.update_selected_count()
 
     def _find_server_by_item_id(self, item_id) -> ServerItem | None:
         try:
@@ -441,9 +464,8 @@ class OUVPNPanelApp:
         return None
 
     def _refresh_tree_row(self, item_id, srv: ServerItem):
-        sel_text = "  [ ✓ ]" if srv.selected else "  [   ]"
+        sel_text = "  🟣 Выбран [✓]" if srv.selected else "  ⚪ Снят [ ]"
         fast_text = "⚡ Да" if srv.is_fast else "-"
-        
         country_disp = "Обход" if srv.is_bypass else (srv.country_code or "??")
         
         ping_disp = srv.ping_status
@@ -462,22 +484,23 @@ class OUVPNPanelApp:
             )
         )
 
-        # Применение цветовых тегов
-        tags = []
+        # Выбираем визуальный тег
         if srv.is_fast:
-            tags.append("gold")
+            tag = "gold"
+        elif srv.selected:
+            if srv.ping_ms is not None:
+                tag = "selected_online"
+            elif srv.ping_status not in ("не проверен", ""):
+                tag = "selected_dead"
+            else:
+                tag = "selected"
         else:
-            tags.append("odd" if srv.source_id % 2 == 1 else "even")
+            tag = "unselected"
 
-        if srv.ping_ms is not None:
-            tags.append("online")
-        elif srv.ping_status not in ("не проверен", ""):
-            tags.append("dead")
-
-        self.tree.item(item_id, tags=tags)
+        self.tree.item(item_id, tags=(tag,))
 
     def populate_table(self):
-        """Перерисовывает строки таблицы."""
+        """Перерисовывает строки таблицы с актуальными фиолетовыми/темными/золотыми цветами."""
         self.tree.delete(*self.tree.get_children())
         query = self.search_entry.get().strip().lower()
 
@@ -490,7 +513,7 @@ class OUVPNPanelApp:
                     continue
 
             item_id = str(srv.source_id)
-            sel_text = "  [ ✓ ]" if srv.selected else "  [   ]"
+            sel_text = "  🟣 Выбран [✓]" if srv.selected else "  ⚪ Снят [ ]"
             fast_text = "⚡ Да" if srv.is_fast else "-"
             country_disp = "Обход" if srv.is_bypass else (srv.country_code or "??")
             
@@ -498,16 +521,17 @@ class OUVPNPanelApp:
             if srv.ping_ms is not None:
                 ping_disp = f"⚡ {srv.ping_ms} ms"
 
-            tags = []
             if srv.is_fast:
-                tags.append("gold")
+                tag = "gold"
+            elif srv.selected:
+                if srv.ping_ms is not None:
+                    tag = "selected_online"
+                elif srv.ping_status not in ("не проверен", ""):
+                    tag = "selected_dead"
+                else:
+                    tag = "selected"
             else:
-                tags.append("odd" if srv.source_id % 2 == 1 else "even")
-
-            if srv.ping_ms is not None:
-                tags.append("online")
-            elif srv.ping_status not in ("не проверен", ""):
-                tags.append("dead")
+                tag = "unselected"
 
             self.tree.insert(
                 "",
@@ -521,7 +545,7 @@ class OUVPNPanelApp:
                     ping_disp,
                     fast_text
                 ),
-                tags=tags
+                tags=(tag,)
             )
 
         self.update_selected_count()
@@ -529,8 +553,8 @@ class OUVPNPanelApp:
     # ----------------- Кнопки и действия -----------------
 
     def action_fetch_servers(self):
-        """Загрузка свежих серверов из источника."""
-        self.set_status("Загрузка конфигов из источника...")
+        """Загрузка свежих серверов из источника (ТОЛЬКО VLESS)."""
+        self.set_status("Загрузка VLESS конфигов из источника...")
         self.btn_fetch.configure(state="disabled")
 
         def worker():
@@ -541,10 +565,10 @@ class OUVPNPanelApp:
 
                 def on_done():
                     self.servers = servers
-                    self.card_total.configure(text=str(meta.get("source_count", len(servers))))
+                    self.card_total.configure(text=str(len(servers)))
                     self.card_updated.configure(text=meta.get("source_update_time", "Недавно"))
                     self.populate_table()
-                    self.set_status(f"Успешно загружено {len(servers)} серверов из источника.")
+                    self.set_status(f"Успешно загружено {len(servers)} VLESS серверов (все выбраны фиолетовым).")
                     self.btn_fetch.configure(state="normal")
 
                 self.root.after(0, on_done)
@@ -578,7 +602,6 @@ class OUVPNPanelApp:
             def ui_update():
                 self.prog_bar["value"] = completed
                 self.set_status(f"Проверка пинга: {completed} из {total}...")
-                # Обновляем видимые строки в таблице
                 for srv in self.servers:
                     iid = str(srv.source_id)
                     if self.tree.exists(iid):
@@ -587,7 +610,6 @@ class OUVPNPanelApp:
 
         def worker():
             try:
-                # Гарантируем наличие бинарника xray
                 core_engine.ensure_xray_binary(on_status=self.set_status)
                 core_engine.test_servers_ping_xray(
                     self.servers,
@@ -611,7 +633,8 @@ class OUVPNPanelApp:
                     res = messagebox.askyesno(
                         "Проверка завершена",
                         f"Найдено живых серверов: {online_count} из {len(self.servers)}.\n\n"
-                        f"Выбрать автоматически только рабочие сервера (с пингом)?"
+                        f"Выбрать автоматически ТОЛЬКО рабочие сервера (с пингом)?\n"
+                        f"(Они подсветятся фиолетовым, а нерабочие снимутся)"
                     )
                     if res:
                         self.action_select_online_only()
@@ -638,26 +661,28 @@ class OUVPNPanelApp:
             self.btn_stop.configure(state="disabled")
 
     def action_select_online_only(self):
-        """Выбирает только сервера с успешным пингом."""
+        """Выбирает только сервера с успешным пингом (фиолетовый фон)."""
         for s in self.servers:
             s.selected = (s.ping_ms is not None)
         self.populate_table()
         cnt = sum(1 for s in self.servers if s.selected)
-        self.set_status(f"Выбрано {cnt} рабочих серверов с пингом.")
+        self.set_status(f"Выбрано {cnt} рабочих серверов (подсвечены фиолетовым).")
 
     def action_select_all(self):
         for s in self.servers:
             s.selected = True
         self.populate_table()
+        self.set_status(f"Выбраны все сервера ({len(self.servers)} шт., фиолетовый фон).")
 
     def action_deselect_all(self):
         for s in self.servers:
             s.selected = False
         self.populate_table()
+        self.set_status("Выбор снят со всех серверов.")
 
     def action_apply_numbers(self):
         """
-        Выбирает сервера по номерам, введённым через запятую (напр: 1, 2, 5, 10-15).
+        Выбирает сервера по номерам через запятую (напр: 1, 2, 5, 10-15).
         """
         text = self.num_entry.get().strip()
         if not text:
@@ -670,7 +695,6 @@ class OUVPNPanelApp:
             if not part:
                 continue
             if "-" in part:
-                # Диапазон, например 10-15
                 try:
                     start_s, end_s = part.split("-", 1)
                     s_val = int(start_s.strip())
@@ -689,7 +713,6 @@ class OUVPNPanelApp:
             messagebox.showwarning("Неверный формат", "Введите числа через запятую или диапазоны (например: 1, 2, 5, 10-20).")
             return
 
-        # Применяем выбор
         matched = 0
         for s in self.servers:
             if s.source_id in target_ids:
@@ -699,7 +722,7 @@ class OUVPNPanelApp:
                 s.selected = False
 
         self.populate_table()
-        self.set_status(f"Выбрано {matched} серверов по указанным номерам.")
+        self.set_status(f"Выбрано {matched} серверов (подсвечены фиолетовым).")
 
     def action_filter_table(self):
         """Фильтрация строк по поисковому запросу."""
@@ -709,7 +732,7 @@ class OUVPNPanelApp:
         """Сохранение ouvpn.txt и отправка на GitHub."""
         selected = [s for s in self.servers if s.selected]
         if not selected:
-            messagebox.showwarning("Ничего не выбрано", "Пожалуйста, отметьте галочками хотя бы один рабочий сервер.")
+            messagebox.showwarning("Ничего не выбрано", "Пожалуйста, выберите хотя бы один сервер (фиолетовый фон).")
             return
 
         confirm = messagebox.askyesno(
