@@ -39,7 +39,7 @@ def main():
     output_file = os.path.join(BASE_DIR, "ouvpn.txt")
 
     default_template = (
-        "# profile-title: 🟢 𝗼𝘂𝗩𝗣𝗡 V2\n"
+        "# profile-title: ouVPN V2\n"
         "# profile-update-interval: {interval}\n"
         "#subscription-userinfo: download=0; total=0;\n"
         "# Date/Time: {date} / {time} (Moscow)\n"

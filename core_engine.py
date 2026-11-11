@@ -598,10 +598,14 @@ def sort_servers_by_user_rules(servers: list[ServerItem]) -> list[ServerItem]:
     return sorted(servers, key=sort_key)
 
 
-def render_heading_text(heading_template: str, count: int, interval: int = 1) -> str:
-    """Подставляет переменные времени МСК и количества серверов в шаблон шапки."""
+def render_heading_text(heading_template: str, count: int, interval: int = 1, comment: str = "") -> str:
+    """Подставляет переменные времени МСК, количества серверов и опциональный комментарий в шаблон шапки."""
     msk_tz = timezone(timedelta(hours=3))
     now = datetime.now(msk_tz)
+
+    clean_comment = comment.strip() if comment else ""
+    comment_line = f"# Комментарий: {clean_comment}" if clean_comment else ""
+    announce_text = f"Обновлено: {now.strftime('%Y-%m-%d %H:%M')} (МСК)" + (f" | {clean_comment}" if clean_comment else "")
 
     vars_dict = {
         "count": str(count),
@@ -618,6 +622,9 @@ def render_heading_text(heading_template: str, count: int, interval: int = 1) ->
         "day": now.strftime("%d"),
         "hour": now.strftime("%H"),
         "minute": now.strftime("%M"),
+        "comment": clean_comment,
+        "comment_line": comment_line,
+        "announce": announce_text,
     }
 
     lines = heading_template.splitlines()
@@ -632,10 +639,20 @@ def render_heading_text(heading_template: str, count: int, interval: int = 1) ->
         heading_text = heading_text.replace(f"{{{key}}}", val)
         heading_text = heading_text.replace(f"{{{key.upper()}}}", val)
 
-    return heading_text
+    final_lines = []
+    prev_blank = False
+    for line in heading_text.splitlines():
+        if line.strip():
+            final_lines.append(line)
+            prev_blank = False
+        elif not prev_blank and final_lines:
+            # Не допускаем пустых строк внутри шапки
+            pass
+
+    return "\n".join(final_lines).strip()
 
 
-def save_and_push_servers(selected_servers: list[ServerItem], on_status=None, preserve_order: bool = False) -> tuple[bool, str]:
+def save_and_push_servers(selected_servers: list[ServerItem], on_status=None, comment: str = "", preserve_order: bool = False) -> tuple[bool, str]:
     """
     Формирует ouvpn.txt с заглушками-категориями (🇸🇴), коммитит и пушит на GitHub.
     Автоматически синхронизирует ветку с origin/main перед записью, предотвращая ошибки non-fast-forward.
@@ -692,14 +709,15 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None, pr
         export_lines.extend([s.build_export_url() for s in bypass_servers])
 
     default_template = (
-        "# profile-title: 🟢 𝗼𝘂𝗩𝗣𝗡 V2\n"
+        "# profile-title: ouVPN V2\n"
         "# profile-update-interval: {interval}\n"
         "#subscription-userinfo: download=0; total=0;\n"
         "# Date/Time: {date} / {time} (Moscow)\n"
+        "{comment_line}\n"
         "# Количество: {count}\n"
         "# profile-web-page-url: https://oulan1.github.io/ouVPN/\n"
         "# support-url: https://t.me/oulanGift\n"
-        "# announce: Обновлено: {date} {time} (МСК)\n"
+        "# announce: {announce}\n"
     )
     try:
         with open(heading_file, "r", encoding="utf-8") as f:
@@ -707,7 +725,7 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None, pr
     except Exception:
         template = default_template
 
-    rendered_head = render_heading_text(template, count=len(active_list), interval=1)
+    rendered_head = render_heading_text(template, count=len(active_list), interval=1, comment=comment)
     content = rendered_head + "\n\n\n" + "\n".join(export_lines) + "\n"
 
     with open(output_file, "w", encoding="utf-8", newline="\n") as f:

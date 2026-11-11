@@ -246,21 +246,21 @@ class OUVPNPanelApp:
         lbl_fast.pack(side="left", padx=(0, 4))
 
         self.scale_fast = tk.Scale(
-            filter_bar, from_=100, to=1000, resolution=25, orient="horizontal",
+            filter_bar, from_=50, to=15000, resolution=50, orient="horizontal",
             bg="#130f1c", fg="#fef08a", highlightthickness=0, troughcolor="#2a1f47",
-            length=130, font=("Segoe UI", 8)
+            length=160, font=("Segoe UI", 8)
         )
         self.scale_fast.set(350)
-        self.scale_fast.pack(side="left", padx=(0, 16))
+        self.scale_fast.pack(side="left", padx=(0, 14))
 
         # Ползунок 2: Медленные сервера (отсекать выше Y ms)
         lbl_slow = tk.Label(filter_bar, text="🚫 Отсекать (выше ms):", font=("Segoe UI", 9, "bold"), bg="#130f1c", fg="#fca5a5")
         lbl_slow.pack(side="left", padx=(0, 4))
 
         self.scale_slow = tk.Scale(
-            filter_bar, from_=200, to=2500, resolution=50, orient="horizontal",
+            filter_bar, from_=100, to=15000, resolution=100, orient="horizontal",
             bg="#130f1c", fg="#fca5a5", highlightthickness=0, troughcolor="#2a1f47",
-            length=130, font=("Segoe UI", 8)
+            length=160, font=("Segoe UI", 8)
         )
         self.scale_slow.set(800)
         self.scale_slow.pack(side="left", padx=(0, 14))
@@ -337,6 +337,31 @@ class OUVPNPanelApp:
         )
         self.search_entry.pack(side="left", padx=(0, 6), ipady=3)
         self.search_entry.bind("<KeyRelease>", lambda e: self.action_filter_table())
+
+        # 3.5. Панель комментария к описанию подписки
+        comment_bar = tk.Frame(self.root, bg=self.c_bg, padx=15, pady=(0, 8))
+        comment_bar.pack(fill="x")
+
+        lbl_comment = tk.Label(
+            comment_bar,
+            text="💬 Комментарий в описание подписки (необязательно):",
+            font=("Segoe UI", 9, "bold"),
+            bg=self.c_bg,
+            fg="#c4b5fd"
+        )
+        lbl_comment.pack(side="left", padx=(0, 8))
+
+        self.comment_entry = tk.Entry(
+            comment_bar,
+            font=("Segoe UI", 9),
+            bg="#1c1626",
+            fg="#ffffff",
+            insertbackground="#ffffff",
+            bd=1,
+            relief="solid",
+            highlightthickness=0
+        )
+        self.comment_entry.pack(side="left", fill="x", expand=True, ipady=3)
 
         # 4. Основная таблица серверов
         table_frame = tk.Frame(self.root, bg=self.c_bg, padx=15)
@@ -904,9 +929,10 @@ class OUVPNPanelApp:
 
         self.btn_push.configure(state="disabled")
         self.set_status("Формирование ouvpn.txt и отправка на GitHub...")
+        user_comment = self.comment_entry.get().strip() if self.comment_entry else ""
 
         def worker():
-            ok, msg = core_engine.save_and_push_servers(selected, on_status=self.set_status, preserve_order=True)
+            ok, msg = core_engine.save_and_push_servers(selected, on_status=self.set_status, comment=user_comment, preserve_order=True)
 
             def on_done():
                 self.btn_push.configure(state="normal")
