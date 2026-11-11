@@ -339,8 +339,8 @@ class OUVPNPanelApp:
         self.search_entry.bind("<KeyRelease>", lambda e: self.action_filter_table())
 
         # 3.5. Панель комментария к описанию подписки
-        comment_bar = tk.Frame(self.root, bg=self.c_bg, padx=15, pady=(0, 8))
-        comment_bar.pack(fill="x")
+        comment_bar = tk.Frame(self.root, bg=self.c_bg, padx=15, pady=0)
+        comment_bar.pack(fill="x", pady=(0, 8))
 
         lbl_comment = tk.Label(
             comment_bar,
