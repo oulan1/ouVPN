@@ -45,13 +45,26 @@ SOURCE_URLS = [
     "https://raw.githubusercontent.com/wlunlocker/vpn-configs/main/blacklist_vpn1.txt",
     "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/WHITE-CIDR-RU-checked.txt",
     "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/BLACK_VLESS_RUS_mobile.txt",
-    "https://raw.githubusercontent.com/aviamastersgh/vpn-free-russia/refs/heads/main/verified_configs.txt"
+    "https://raw.githubusercontent.com/aviamastersgh/vpn-free-russia/refs/heads/main/verified_configs.txt",
+    "https://raw.githubusercontent.com/histeenn/VLESS-PO-GRIBI/refs/heads/main/deploy/subscriptions/1.txt",
+    "https://raw.githubusercontent.com/histeenn/VLESS-PO-GRIBI/refs/heads/main/deploy/subscriptions/17.txt",
+    "https://raw.githubusercontent.com/histeenn/VLESS-PO-GRIBI/refs/heads/main/deploy/subscriptions/24.txt"
 ]
 
-# Адреса для трехэтапной проверки
+# Адреса для комплексной проверки доступности (Google, Telegram, Discord, Instagram, YouTube)
 PING_TEST_URL_GOOGLE = "http://www.gstatic.com/generate_204"
 PING_TEST_URL_TELEGRAM = "https://t.me"
 PING_TEST_URL_DISCORD = "https://discord.com/"
+PING_TEST_URL_INSTAGRAM = "https://www.instagram.com/"
+PING_TEST_URL_YOUTUBE = "https://www.youtube.com/generate_204"
+
+# Регулярка для выявления серверов обхода: EU, CIDR, *CIDR, LTE, SNI, Обход (любой регистр)
+BYPASS_RE = re.compile(r'(?i)(\*?cidr|\blte\b|\bsni\b|обход)')
+
+# Заглушки-разделители категорий (с флагом Сомали 🇸🇴)
+DUMMY_CATEGORY_MAIN = "vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%F0%9F%87%B8%F0%9F%87%B4%20%D0%9E%D0%A1%D0%9D%D0%9E%D0%92%D0%9D%D0%AB%D0%95%20%D0%A1%D0%95%D0%A0%D0%92%D0%95%D0%A0%D0%90"
+DUMMY_CATEGORY_RU = "vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%F0%9F%87%B8%F0%9F%87%B4%20%D0%AE%D0%A2%D0%A3%D0%91%20%D0%91%D0%95%D0%97%20%D0%A0%D0%95%D0%9A%D0%9B%D0%90%D0%9C%D0%AB"
+DUMMY_CATEGORY_BYPASS = "vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%F0%9F%87%B8%F0%9F%87%B4%20%D0%9E%D0%91%D0%A5%D0%9E%D0%94%20%D0%94%D0%9B%D0%AF%20%D0%91%D0%A1"
 
 # Регулярка для извлечения эмодзи-флагов стран
 FLAG_RE = re.compile(r'[\U0001F1E6-\U0001F1FF]{2}')
@@ -212,16 +225,18 @@ class ServerItem:
         self.old_name = self._extract_old_name()
         self.flag, self.country_code = extract_flag_and_country(self.old_name)
         
-        self.is_bypass = (self.country_code == "EU" or "обход" in self.old_name.lower())
+        # Обходы: EU, CIDR, *CIDR, LTE, SNI (в любом регистре) или слово обход
+        self.is_bypass = (self.country_code == "EU" or bool(BYPASS_RE.search(self.old_name)))
+        if self.is_bypass:
+            self.flag = "🇪🇺"
+            self.country_code = "EU"
+
         self.eu_num = 0
         
         self.selected = True
         self.is_fast = False
         
-        # Данные трехэтапной проверки (Google + TG + Discord)
-        self.google_ok = False
-        self.tg_ok = False
-        self.discord_ok = False
+        # Данные проверки
         self.ping_ms = None
         self.ping_status = "не проверен"
         
@@ -234,8 +249,7 @@ class ServerItem:
         fast_mark = " ⚡" if self.is_fast else ""
         if self.is_bypass:
             num = self.eu_num if self.eu_num > 0 else self.source_id
-            flag = self.flag or "🇪🇺"
-            return f"#{self.source_id} | {flag} Обход №{num}{fast_mark}"
+            return f"#{self.source_id} | 🇪🇺 Обход №{num}{fast_mark}"
         elif self.country_code and self.flag:
             return f"#{self.source_id} | {self.country_code} {self.flag} ouVPN V2{fast_mark}"
         else:
@@ -351,20 +365,87 @@ def convert_item_to_xray_outbound(item: ServerItem, tag: str) -> dict | None:
         return None
 
 
+def _probe_targets(opener, timeout: int) -> tuple[bool, int, str]:
+    """
+    Проверяет 5 ключевых сервисов: Google, Telegram, Discord, Instagram, YouTube.
+    Возвращает (успех, средний_пинг, статус/ошибка).
+    """
+    # 1. Google
+    t0 = time.time()
+    try:
+        req = urllib.request.Request(PING_TEST_URL_GOOGLE, headers={"User-Agent": "Mozilla/5.0"})
+        with opener.open(req, timeout=timeout) as resp:
+            if resp.status not in (200, 204):
+                return False, 0, "Таймаут (Google)"
+            g_ms = int(round((time.time() - t0) * 1000))
+    except Exception:
+        return False, 0, "Таймаут (Google)"
+
+    # 2. Telegram
+    t1 = time.time()
+    try:
+        req = urllib.request.Request(PING_TEST_URL_TELEGRAM, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+        with opener.open(req, timeout=timeout) as resp:
+            if resp.status not in (200, 204, 301, 302, 307, 308):
+                return False, 0, "TG недоступен"
+            tg_ms = int(round((time.time() - t1) * 1000))
+    except Exception:
+        return False, 0, "TG недоступен"
+
+    # 3. Discord
+    t2 = time.time()
+    try:
+        req = urllib.request.Request(PING_TEST_URL_DISCORD, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/125.0.0.0"})
+        with opener.open(req, timeout=timeout) as resp:
+            if resp.status not in (200, 204, 301, 302, 307, 308):
+                return False, 0, "Discord недоступен"
+            dc_ms = int(round((time.time() - t2) * 1000))
+    except Exception:
+        return False, 0, "Discord недоступен"
+
+    # 4. Instagram
+    t3 = time.time()
+    try:
+        req = urllib.request.Request(PING_TEST_URL_INSTAGRAM, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/125.0.0.0"})
+        with opener.open(req, timeout=timeout) as resp:
+            if resp.status not in (200, 204, 301, 302, 307, 308):
+                return False, 0, "Instagram недоступен"
+            ig_ms = int(round((time.time() - t3) * 1000))
+    except Exception:
+        return False, 0, "Instagram недоступен"
+
+    # 5. YouTube
+    t4 = time.time()
+    try:
+        req = urllib.request.Request(PING_TEST_URL_YOUTUBE, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+        with opener.open(req, timeout=timeout) as resp:
+            if resp.status not in (200, 204, 301, 302, 307, 308):
+                return False, 0, "YouTube недоступен"
+            yt_ms = int(round((time.time() - t4) * 1000))
+    except Exception:
+        return False, 0, "YouTube недоступен"
+
+    avg_round = int(round((g_ms + tg_ms + dc_ms + ig_ms + yt_ms) / 5.0))
+    return True, avg_round, "OK"
+
+
 def test_servers_ping_xray(
     servers: list[ServerItem],
     on_progress=None,
+    on_status=None,
     timeout: int = 8,
     batch_size: int = 35,
     stop_event: threading.Event = None
 ):
     """
-    Тройная проверка доступности через Xray:
+    Комплексная двойная проверка доступности через Xray (2 раунда с интервалом 15 секунд):
+    В каждом раунде проверяются 5 сервисов:
     1) HTTP GET на Google (gstatic generate_204)
     2) HTTPS GET на Telegram (https://t.me)
     3) HTTPS GET на Discord (https://discord.com/)
-    Сервер считается рабочим только если ВСЕ ТРИ проверки успешны!
-    В поле ping выводится средний пинг за 3 проверки.
+    4) HTTPS GET на Instagram (https://www.instagram.com/)
+    5) HTTPS GET на YouTube (https://www.youtube.com/generate_204)
+    В поле ping выводится средний пинг из двух средних пингов проверок!
     """
     xray_path = ensure_xray_binary()
     core_dir = get_core_dir()
@@ -427,7 +508,9 @@ def test_servers_ping_xray(
         )
         time.sleep(0.8)
 
-        def probe_triple(srv: ServerItem, port_num: int):
+        round1_results = {}
+
+        def run_round1(srv: ServerItem, port_num: int):
             if stop_event and stop_event.is_set():
                 return
             proxy_handler = urllib.request.ProxyHandler({
@@ -441,92 +524,52 @@ def test_servers_ping_xray(
                 proxy_handler,
                 urllib.request.HTTPSHandler(context=ssl_ctx)
             )
-            
-            # --- Этап 1: Проверка Google (generate_204) ---
-            google_ok = False
-            g_ms = 0
-            t0 = time.time()
-            try:
-                req_g = urllib.request.Request(
-                    PING_TEST_URL_GOOGLE,
-                    headers={"User-Agent": "Mozilla/5.0"}
-                )
-                with opener.open(req_g, timeout=timeout) as resp_g:
-                    if resp_g.status in (204, 200):
-                        google_ok = True
-                        g_ms = int(round((time.time() - t0) * 1000))
-            except Exception:
-                pass
-
-            if not google_ok:
-                srv.google_ok = False
-                srv.tg_ok = False
-                srv.discord_ok = False
-                srv.ping_ms = None
-                srv.ping_status = "Таймаут (Google)"
-                return
-
-            # --- Этап 2: Проверка Telegram (https://t.me) ---
-            tg_ok = False
-            tg_ms = 0
-            t1 = time.time()
-            try:
-                req_tg = urllib.request.Request(
-                    PING_TEST_URL_TELEGRAM,
-                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
-                )
-                with opener.open(req_tg, timeout=timeout) as resp_tg:
-                    if resp_tg.status in (200, 301, 302):
-                        tg_ok = True
-                        tg_ms = int(round((time.time() - t1) * 1000))
-            except Exception:
-                pass
-
-            if not tg_ok:
-                srv.google_ok = True
-                srv.tg_ok = False
-                srv.discord_ok = False
-                srv.ping_ms = None
-                srv.ping_status = "TG недоступен"
-                return
-
-            # --- Этап 3: Проверка Discord (https://discord.com/) ---
-            discord_ok = False
-            dc_ms = 0
-            t2 = time.time()
-            try:
-                req_dc = urllib.request.Request(
-                    PING_TEST_URL_DISCORD,
-                    headers={
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                    }
-                )
-                with opener.open(req_dc, timeout=timeout) as resp_dc:
-                    if resp_dc.status in (200, 204, 301, 302, 307, 308):
-                        discord_ok = True
-                        dc_ms = int(round((time.time() - t2) * 1000))
-            except Exception:
-                pass
-
-            srv.google_ok = True
-            srv.tg_ok = True
-            srv.discord_ok = discord_ok
-
-            if discord_ok:
-                # Средний пинг за 3 успешные проверки
-                avg_ms = int(round((g_ms + tg_ms + dc_ms) / 3.0))
-                srv.ping_ms = avg_ms
-                srv.ping_status = f"{avg_ms} ms"
+            ok, avg1, err = _probe_targets(opener, timeout)
+            if ok:
+                round1_results[srv] = (avg1, opener)
+                srv.ping_status = f"Раунд 1: {avg1} ms"
             else:
                 srv.ping_ms = None
-                srv.ping_status = "Discord недоступен"
+                srv.ping_status = err
 
         with ThreadPoolExecutor(max_workers=min(30, len(port_map))) as executor:
-            futures = [executor.submit(probe_triple, srv, port_map[srv]) for srv in port_map]
+            futures = [executor.submit(run_round1, srv, port_map[srv]) for srv in port_map]
             for fut in as_completed(futures):
-                completed += 1
-                if on_progress:
-                    on_progress(completed, total)
+                if stop_event and stop_event.is_set():
+                    break
+
+        # Пауза 15 секунд перед вторым раундом для проверки стабильности соединения
+        if round1_results and not (stop_event and stop_event.is_set()):
+            for sec in range(15, 0, -1):
+                if stop_event and stop_event.is_set():
+                    break
+                if on_status:
+                    on_status(f"Интервал 15 сек перед Раундом 2 (осталось {sec} сек)...")
+                time.sleep(1)
+
+        # Раунд 2
+        def run_round2(srv: ServerItem):
+            if stop_event and stop_event.is_set():
+                return
+            avg1, opener = round1_results[srv]
+            ok2, avg2, err2 = _probe_targets(opener, timeout)
+            if ok2:
+                final_avg = int(round((avg1 + avg2) / 2.0))
+                srv.ping_ms = final_avg
+                srv.ping_status = f"{final_avg} ms"
+            else:
+                srv.ping_ms = None
+                srv.ping_status = f"Сбой раунда 2 ({err2})"
+
+        if round1_results and not (stop_event and stop_event.is_set()):
+            with ThreadPoolExecutor(max_workers=min(25, len(round1_results))) as executor2:
+                futures2 = [executor2.submit(run_round2, srv) for srv in round1_results]
+                for fut in as_completed(futures2):
+                    pass
+
+        completed += len(port_map)
+        if on_progress:
+            on_progress(completed, total)
 
         proc.terminate()
         try:
@@ -592,9 +635,9 @@ def render_heading_text(heading_template: str, count: int, interval: int = 1) ->
     return heading_text
 
 
-def save_and_push_servers(selected_servers: list[ServerItem], on_status=None) -> tuple[bool, str]:
+def save_and_push_servers(selected_servers: list[ServerItem], on_status=None, preserve_order: bool = False) -> tuple[bool, str]:
     """
-    Сортирует выбранные сервера, формирует ouvpn.txt, коммитит и пушит на GitHub.
+    Формирует ouvpn.txt с заглушками-категориями (🇸🇴), коммитит и пушит на GitHub.
     Автоматически синхронизирует ветку с origin/main перед записью, предотвращая ошибки non-fast-forward.
     """
     base_dir = get_base_dir()
@@ -622,9 +665,31 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None) ->
         return False, f"Ошибка синхронизации с GitHub (fetch/reset): {ex}"
 
     if on_status:
-        on_status("Сортировка серверов по правилам (Европа ➔ Другие ➔ РФ ➔ Обходы)...")
+        on_status("Формирование разделов с заглушками категорий 🇸🇴...")
 
-    sorted_list = sort_servers_by_user_rules(selected_servers)
+    if preserve_order:
+        active_list = list(selected_servers)
+    else:
+        active_list = sort_servers_by_user_rules(selected_servers)
+
+    # 3. Разделение на 3 категории с заглушками:
+    # 1. 🇸🇴 ОСНОВНЫЕ СЕРВЕРА (Европейские и международные)
+    # 2. 🇸🇴 ЮТУБ БЕЗ РЕКЛАМЫ (Россия RU)
+    # 3. 🇸🇴 ОБХОД ДЛЯ БС (Обходы EU, CIDR, LTE, SNI)
+    main_servers = [s for s in active_list if not s.is_bypass and s.country_code != "RU"]
+    ru_servers = [s for s in active_list if not s.is_bypass and s.country_code == "RU"]
+    bypass_servers = [s for s in active_list if s.is_bypass]
+
+    export_lines = []
+    if main_servers:
+        export_lines.append(DUMMY_CATEGORY_MAIN)
+        export_lines.extend([s.build_export_url() for s in main_servers])
+    if ru_servers:
+        export_lines.append(DUMMY_CATEGORY_RU)
+        export_lines.extend([s.build_export_url() for s in ru_servers])
+    if bypass_servers:
+        export_lines.append(DUMMY_CATEGORY_BYPASS)
+        export_lines.extend([s.build_export_url() for s in bypass_servers])
 
     default_template = (
         "# profile-title: 🟢 𝗼𝘂𝗩𝗣𝗡 V2\n"
@@ -642,19 +707,18 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None) ->
     except Exception:
         template = default_template
 
-    rendered_head = render_heading_text(template, count=len(sorted_list), interval=1)
-    export_lines = [s.build_export_url() for s in sorted_list]
+    rendered_head = render_heading_text(template, count=len(active_list), interval=1)
     content = rendered_head + "\n\n\n" + "\n".join(export_lines) + "\n"
 
     with open(output_file, "w", encoding="utf-8", newline="\n") as f:
         f.write(content)
 
     if on_status:
-        on_status(f"Файл ouvpn.txt записан ({len(sorted_list)} серв.). Отправка на GitHub...")
+        on_status(f"Файл ouvpn.txt записан ({len(active_list)} серв.). Отправка на GitHub...")
 
     try:
         subprocess.run(["git", "add", "ouvpn.txt"], cwd=base_dir, check=True)
-        commit_msg = f"Ручное обновление рабочих серверов ouVPN [{len(sorted_list)} шт.] [skip ci]"
+        commit_msg = f"Ручное обновление рабочих серверов ouVPN [{len(active_list)} шт.] [skip ci]"
         subprocess.run(["git", "commit", "-m", commit_msg], cwd=base_dir, check=True)
         
         # Отправляем в репозиторий
@@ -666,6 +730,6 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None) ->
             if push_res2.returncode != 0:
                 return False, f"Ошибка при push на GitHub:\n{push_res2.stderr.strip()}"
 
-        return True, f"Успешно сохранено и отправлено на GitHub! Всего серверов: {len(sorted_list)}"
+        return True, f"Успешно сохранено и отправлено на GitHub! Всего активных серверов: {len(active_list)}"
     except Exception as ex:
         return False, f"Ошибка Git: {ex}"

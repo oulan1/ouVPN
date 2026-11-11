@@ -170,7 +170,7 @@ class OUVPNPanelApp:
         # Кнопка: Проверить пинг
         self.btn_ping = tk.Button(
             action_bar,
-            text="⚡ Проверить пинг (Google + TG + Discord)",
+            text="⚡ Проверить пинг (5 сайтов x2)",
             font=("Segoe UI", 10, "bold"),
             bg="#3b2b5e",
             fg="#e9d5ff",
@@ -236,6 +236,60 @@ class OUVPNPanelApp:
         )
         self.btn_push.pack(side="right")
 
+        # 2.5. Панель авто-фильтров по пингу и ручного порядка
+        filter_bar = tk.Frame(self.root, bg="#130f1c", padx=15, pady=6)
+        filter_bar.configure(highlightbackground=self.c_card_border, highlightthickness=1)
+        filter_bar.pack(fill="x", padx=15, pady=(0, 8))
+
+        # Ползунок 1: Быстрые сервера (⚡ до X ms)
+        lbl_fast = tk.Label(filter_bar, text="⚡ Быстрые (до ms):", font=("Segoe UI", 9, "bold"), bg="#130f1c", fg="#fef08a")
+        lbl_fast.pack(side="left", padx=(0, 4))
+
+        self.scale_fast = tk.Scale(
+            filter_bar, from_=100, to=1000, resolution=25, orient="horizontal",
+            bg="#130f1c", fg="#fef08a", highlightthickness=0, troughcolor="#2a1f47",
+            length=130, font=("Segoe UI", 8)
+        )
+        self.scale_fast.set(350)
+        self.scale_fast.pack(side="left", padx=(0, 16))
+
+        # Ползунок 2: Медленные сервера (отсекать выше Y ms)
+        lbl_slow = tk.Label(filter_bar, text="🚫 Отсекать (выше ms):", font=("Segoe UI", 9, "bold"), bg="#130f1c", fg="#fca5a5")
+        lbl_slow.pack(side="left", padx=(0, 4))
+
+        self.scale_slow = tk.Scale(
+            filter_bar, from_=200, to=2500, resolution=50, orient="horizontal",
+            bg="#130f1c", fg="#fca5a5", highlightthickness=0, troughcolor="#2a1f47",
+            length=130, font=("Segoe UI", 8)
+        )
+        self.scale_slow.set(800)
+        self.scale_slow.pack(side="left", padx=(0, 14))
+
+        btn_apply_filters = tk.Button(
+            filter_bar, text="⚙️ Применить фильтры к пингам", font=("Segoe UI", 8, "bold"),
+            bg="#3b2b5e", fg="#ffffff", activebackground=self.c_primary, bd=0, padx=10, pady=4,
+            cursor="hand2", command=self.action_apply_ping_filters
+        )
+        btn_apply_filters.pack(side="left", padx=(0, 16))
+
+        # Кнопки перемещения строк вверх/вниз
+        lbl_order = tk.Label(filter_bar, text="Порядок (⠿ перетаскивание):", font=("Segoe UI", 8), bg="#130f1c", fg=self.c_muted)
+        lbl_order.pack(side="left", padx=(0, 4))
+
+        btn_up = tk.Button(
+            filter_bar, text="▲ Выше", font=("Segoe UI", 8, "bold"),
+            bg="#221c30", fg="#c4b5fd", bd=0, padx=8, pady=3,
+            cursor="hand2", command=self.action_move_row_up
+        )
+        btn_up.pack(side="left", padx=(0, 4))
+
+        btn_down = tk.Button(
+            filter_bar, text="▼ Ниже", font=("Segoe UI", 8, "bold"),
+            bg="#221c30", fg="#c4b5fd", bd=0, padx=8, pady=3,
+            cursor="hand2", command=self.action_move_row_down
+        )
+        btn_down.pack(side="left")
+
         # 3. Панель выбора по номерам и фильтрации
         select_bar = tk.Frame(self.root, bg=self.c_bg, padx=15, pady=0)
         select_bar.pack(fill="x", pady=(0, 8))
@@ -288,7 +342,7 @@ class OUVPNPanelApp:
         table_frame = tk.Frame(self.root, bg=self.c_bg, padx=15)
         table_frame.pack(fill="both", expand=True)
 
-        columns = ("id", "sel", "name", "country", "ping", "fast")
+        columns = ("drag", "id", "sel", "name", "country", "ping", "fast")
         self.tree = ttk.Treeview(
             table_frame,
             columns=columns,
@@ -297,19 +351,21 @@ class OUVPNPanelApp:
             selectmode="extended"
         )
 
+        self.tree.heading("drag", text="⠿", anchor="center")
         self.tree.heading("id", text="# ID", anchor="center")
         self.tree.heading("sel", text="Статус выбора", anchor="center")
         self.tree.heading("name", text="Название сервера для ouvpn.txt", anchor="w")
         self.tree.heading("country", text="Страна", anchor="center")
-        self.tree.heading("ping", text="Ср. пинг (3 проверки)", anchor="center")
+        self.tree.heading("ping", text="Ср. пинг (5 сайтов x2)", anchor="center")
         self.tree.heading("fast", text="Скоростной", anchor="center")
 
+        self.tree.column("drag", width=35, anchor="center")
         self.tree.column("id", width=65, anchor="center")
         self.tree.column("sel", width=120, anchor="center")
-        self.tree.column("name", width=530, anchor="w")
+        self.tree.column("name", width=510, anchor="w")
         self.tree.column("country", width=90, anchor="center")
-        self.tree.column("ping", width=165, anchor="center")
-        self.tree.column("fast", width=100, anchor="center")
+        self.tree.column("ping", width=175, anchor="center")
+        self.tree.column("fast", width=95, anchor="center")
 
         # Настройка цветовых тегов подсветки строк
         # 1. Выбранные (фиолетовый фон)
@@ -330,8 +386,13 @@ class OUVPNPanelApp:
         self.tree.pack(side="left", fill="both", expand=True)
         v_scroll.pack(side="right", fill="y")
 
+        # Переменная для перетаскивания строк (Drag-and-Drop)
+        self._dragged_item = None
+
         # Привязка событий к таблице
-        self.tree.bind("<Button-1>", self._on_tree_click)
+        self.tree.bind("<ButtonPress-1>", self._on_tree_press)
+        self.tree.bind("<B1-Motion>", self._on_tree_drag)
+        self.tree.bind("<ButtonRelease-1>", self._on_tree_release)
         self.tree.bind("<Double-Button-1>", self._on_tree_double_click)
         self.tree.bind("<space>", self._on_tree_space)
 
@@ -392,13 +453,109 @@ class OUVPNPanelApp:
         cnt = sum(1 for s in self.servers if s.selected)
         self.card_selected.configure(text=f"{cnt} из {len(self.servers)}")
 
-    # ----------------- Обработчики событий таблицы -----------------
+    # ----------------- Обработчики событий таблицы и Drag-and-Drop -----------------
+
+    def _on_tree_press(self, event):
+        """Обработка нажатия мыши: перетаскивание (⠿) или выбор строки."""
+        item_id = self.tree.identify_row(event.y)
+        col = self.tree.identify_column(event.x)
+        if col == "#1" and item_id:
+            # Нажата колонка ⠿ — начинаем перетаскивание строки
+            self._dragged_item = item_id
+            return "break"
+        else:
+            self._dragged_item = None
+            self._on_tree_click(event)
+
+    def _on_tree_drag(self, event):
+        """Перемещение зажатой строки и авто-прокрутка списка у границ окна."""
+        if not self._dragged_item:
+            return
+        # Автопрокрутка вверх / вниз
+        if event.y < 35:
+            self.tree.yview_scroll(-1, "units")
+        elif event.y > self.tree.winfo_height() - 35:
+            self.tree.yview_scroll(1, "units")
+
+        target = self.tree.identify_row(event.y)
+        if target and target != self._dragged_item:
+            target_idx = self.tree.index(target)
+            self.tree.move(self._dragged_item, "", target_idx)
+
+    def _on_tree_release(self, event):
+        """Завершение перетаскивания: сохраняем новый порядок серверов в памяти."""
+        if self._dragged_item:
+            self._sync_servers_order_from_tree()
+            self._dragged_item = None
+
+    def _sync_servers_order_from_tree(self):
+        """Синхронизирует массив self.servers с текущим порядком строк в Treeview."""
+        new_order_ids = []
+        for child in self.tree.get_children():
+            try:
+                sid = int(str(child))
+                new_order_ids.append(sid)
+            except Exception:
+                pass
+
+        server_map = {s.source_id: s for s in self.servers}
+        reordered = [server_map[i] for i in new_order_ids if i in server_map]
+        remaining = [s for s in self.servers if s.source_id not in new_order_ids]
+        self.servers = reordered + remaining
+        self.set_status("Порядок серверов изменён (⠿ перетаскивание).")
+
+    def action_move_row_up(self):
+        """Переместить выбранный сервер на одну позицию выше."""
+        sel = self.tree.selection()
+        if not sel:
+            return
+        item = sel[0]
+        idx = self.tree.index(item)
+        if idx > 0:
+            self.tree.move(item, "", idx - 1)
+            self._sync_servers_order_from_tree()
+            self.tree.see(item)
+
+    def action_move_row_down(self):
+        """Переместить выбранный сервер на одну позицию ниже."""
+        sel = self.tree.selection()
+        if not sel:
+            return
+        item = sel[0]
+        idx = self.tree.index(item)
+        total = len(self.tree.get_children())
+        if idx < total - 1:
+            self.tree.move(item, "", idx + 1)
+            self._sync_servers_order_from_tree()
+            self.tree.see(item)
+
+    def action_apply_ping_filters(self):
+        """Автоматически помечает быстрые (⚡) и отсекает медленные сервера по ползункам."""
+        if not self.scale_fast or not self.scale_slow:
+            return
+        max_fast = self.scale_fast.get()
+        max_allowed = self.scale_slow.get()
+        fast_count = 0
+        selected_count = 0
+        for s in self.servers:
+            if s.ping_ms is not None:
+                s.is_fast = (s.ping_ms <= max_fast)
+                s.selected = (s.ping_ms <= max_allowed)
+            else:
+                s.is_fast = False
+                s.selected = False
+            if s.is_fast:
+                fast_count += 1
+            if s.selected:
+                selected_count += 1
+        self.populate_table()
+        self.update_selected_count()
+        self.set_status(f"Фильтры применены: выбрано {selected_count} раб. (до {max_allowed} ms), из них {fast_count} скоростных ⚡ (до {max_fast} ms).")
 
     def _on_tree_click(self, event):
         """
-        Одиночный клик по любой части строки:
+        Одиночный клик по строке:
         Переключает выбор сервера и делает фон фиолетовым / тёмным.
-        Используется задержка 220мс для устранения конфликта с double-click.
         """
         item_id = self.tree.identify_row(event.y)
         if not item_id:
@@ -436,7 +593,6 @@ class OUVPNPanelApp:
         Двойной клик переключает признак 'скоростной' (⚡)
         и выделяет строку золотым цветом.
         """
-        # Отменяем одиночный клик, чтобы не переключать выбор при дабл-клике
         if self._single_click_timer:
             self.root.after_cancel(self._single_click_timer)
             self._single_click_timer = None
@@ -475,6 +631,7 @@ class OUVPNPanelApp:
         self.tree.item(
             item_id,
             values=(
+                "⠿",
                 f"#{srv.source_id}",
                 sel_text,
                 srv.get_display_name(),
@@ -538,6 +695,7 @@ class OUVPNPanelApp:
                 "end",
                 iid=item_id,
                 values=(
+                    "⠿",
                     f"#{srv.source_id}",
                     sel_text,
                     srv.get_display_name(),
@@ -601,7 +759,7 @@ class OUVPNPanelApp:
         def on_prog(completed, total):
             def ui_update():
                 self.prog_bar["value"] = completed
-                self.set_status(f"Проверка пинга (Google + TG + Discord): {completed} из {total}...")
+                self.set_status(f"Проверка пинга (5 сервисов x2): {completed} из {total}...")
                 for srv in self.servers:
                     iid = str(srv.source_id)
                     if self.tree.exists(iid):
@@ -614,7 +772,8 @@ class OUVPNPanelApp:
                 core_engine.test_servers_ping_xray(
                     self.servers,
                     on_progress=on_prog,
-                    timeout=10,
+                    on_status=self.set_status,
+                    timeout=8,
                     batch_size=35,
                     stop_event=self.stop_ping_event
                 )
@@ -627,17 +786,11 @@ class OUVPNPanelApp:
                     
                     online_count = sum(1 for s in self.servers if s.ping_ms is not None)
                     dead_count = len(self.servers) - online_count
-                    self.set_status(f"Проверка завершена! Онлайн: {online_count}, Таймаут/Ошибок: {dead_count}")
-                    self.populate_table()
                     
-                    res = messagebox.askyesno(
-                        "Проверка завершена",
-                        f"Найдено живых серверов: {online_count} из {len(self.servers)}.\n\n"
-                        f"Выбрать автоматически ТОЛЬКО рабочие сервера (с пингом)?\n"
-                        f"(Они подсветятся фиолетовым, а нерабочие снимутся)"
-                    )
-                    if res:
-                        self.action_select_online_only()
+                    # Применяем авто-фильтры по ползункам
+                    self.action_apply_ping_filters()
+                    selected_cnt = sum(1 for s in self.servers if s.selected)
+                    self.set_status(f"Проверка завершена! Онлайн: {online_count}. Согласно ползункам отобрано {selected_cnt} серв.")
 
                 self.root.after(0, on_finished)
 
@@ -738,11 +891,12 @@ class OUVPNPanelApp:
         confirm = messagebox.askyesno(
             "Подтверждение публикации",
             f"Будет сохранено и отправлено на GitHub серверов: {len(selected)} шт.\n\n"
-            f"Порядок расположения серверов:\n"
-            f"1. Европа (с сортировкой по минимальному пингу)\n"
-            f"2. Другие страны мира\n"
-            f"3. Россия (RU)\n"
-            f"4. Обходы (🇪🇺 Обход...)\n\n"
+            f"Категории в ouvpn.txt с заглушками 🇸🇴:\n"
+            f"1. 🇸🇴 ОСНОВНЫЕ СЕРВЕРА (Европа и весь мир)\n"
+            f"2. 🇸🇴 ЮТУБ БЕЗ РЕКЛАМЫ (Россия RU)\n"
+            f"3. 🇸🇴 ОБХОД ДЛЯ БС (CIDR, LTE, SNI, EU)\n\n"
+            f"После публикации все снятые сервера будут скрыты из панели,\n"
+            f"останутся только эти {len(selected)} выбранных серверов.\n\n"
             f"Продолжить отправку на GitHub?"
         )
         if not confirm:
@@ -752,13 +906,20 @@ class OUVPNPanelApp:
         self.set_status("Формирование ouvpn.txt и отправка на GitHub...")
 
         def worker():
-            ok, msg = core_engine.save_and_push_servers(selected, on_status=self.set_status)
+            ok, msg = core_engine.save_and_push_servers(selected, on_status=self.set_status, preserve_order=True)
 
             def on_done():
                 self.btn_push.configure(state="normal")
                 self.set_status(msg)
                 if ok:
-                    messagebox.showinfo("Успешно!", msg)
+                    # Оставляем в панели только опубликованные сервера
+                    self.servers = [s for s in self.servers if s.selected]
+                    self.populate_table()
+                    self.card_total.configure(text=str(len(self.servers)))
+                    messagebox.showinfo(
+                        "Успешно!",
+                        f"{msg}\n\nСнятые сервера скрыты! В панели оставлены только опубликованные ({len(self.servers)} шт.)."
+                    )
                 else:
                     messagebox.showerror("Ошибка публикации", msg)
 

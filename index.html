@@ -2,18 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ouVPN - Подключение</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ouVPN - Подключение (HAPP & INCY)</title>
     <link rel="icon" href="https://i.ibb.co/4ZggD9Jz/30650.jpg">
     <style>
         :root {
             --bg-color: #0b090f;
-            --card-bg: #15121c;
+            --card-bg: #14101c;
+            --card-bg-subtle: #1c1626;
             --primary: #8b5cf6;
             --primary-hover: #a78bfa;
+            --primary-glow: rgba(139, 92, 246, 0.4);
+            --incy-color: #06b6d4;
+            --incy-glow: rgba(6, 182, 212, 0.4);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #2e224d;
+            --green: #10b981;
+            --gold: #fbbf24;
         }
         
         * {
@@ -21,6 +27,7 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -30,56 +37,181 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            padding: 3rem 1rem;
-            background-image: radial-gradient(circle at top center, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            padding: 2.5rem 1rem 4rem 1rem;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.22) 0%, transparent 60%),
+                radial-gradient(circle at 80% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
         }
 
         .container {
-            max-width: 600px;
+            max-width: 620px;
             width: 100%;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-wrap {
+            position: relative;
+            display: inline-block;
         }
 
         .logo {
-            width: 88px;
-            height: 88px;
-            border-radius: 22px;
+            width: 90px;
+            height: 90px;
+            border-radius: 24px;
             margin-bottom: 1rem;
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 35px var(--primary-glow);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .badge-live {
+            position: absolute;
+            bottom: 1.25rem;
+            right: -0.25rem;
+            background: #10b981;
+            color: #042f2e;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 10px;
+            border: 2px solid var(--bg-color);
         }
 
         .title {
-            font-size: 2.25rem;
+            font-size: 2.4rem;
             font-weight: 800;
-            letter-spacing: -0.025em;
-            background: linear-gradient(to right, #c4b5fd, #8b5cf6);
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff 30%, #c4b5fd 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 0.35rem;
         }
 
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .subtitle a {
+            color: #a78bfa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .subtitle a:hover {
+            text-decoration: underline;
+        }
+
+        /* Табы переключения HAPP и INCY */
+        .tabs-nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--card-bg-subtle);
+            padding: 4px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.75rem;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.85rem 1rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active.happ-tab {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .tab-btn.active.incy-tab {
+            background: var(--incy-color);
+            color: #082f49;
+            box-shadow: 0 4px 20px var(--incy-glow);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Карточка приложения */
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 1.5rem;
-            padding: 2.5rem;
+            padding: 2rem;
             box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+            margin-bottom: 1.5rem;
         }
 
-        .instruction-title {
-            font-size: 1.35rem;
+        .app-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.75rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .app-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .icon-happ {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+        }
+
+        .icon-incy {
+            background: linear-gradient(135deg, #06b6d4, #0284c7);
+            color: #082f49;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
             font-weight: 700;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: var(--text-main);
+        }
+
+        .app-tag {
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
         .step {
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
             position: relative;
         }
 
@@ -90,61 +222,77 @@
         .step-header {
             display: flex;
             align-items: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.6rem;
         }
 
         .step-number {
-            background-color: rgba(139, 92, 246, 0.15);
+            background-color: rgba(255, 255, 255, 0.08);
             color: #c4b5fd;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.9rem;
-            margin-right: 1rem;
+            font-size: 0.85rem;
+            margin-right: 0.85rem;
             flex-shrink: 0;
-            border: 1px solid rgba(139, 92, 246, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .step-title {
             font-weight: 600;
-            font-size: 1.15rem;
+            font-size: 1.05rem;
         }
 
         .step-content {
-            padding-left: 3rem;
+            padding-left: 2.6rem;
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
 
+        /* Кнопки действий */
         .btn {
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             width: 100%;
-            padding: 1rem 1.5rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
+            padding: 0.95rem 1.25rem;
+            border-radius: 0.85rem;
+            font-weight: 700;
             font-size: 1rem;
             text-align: center;
             text-decoration: none;
             transition: all 0.2s ease;
-            margin-top: 1.25rem;
+            margin-top: 1rem;
             border: none;
             cursor: pointer;
         }
 
-        .btn-primary {
-            background-color: var(--primary);
+        .btn-happ {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
             color: white;
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 4px 20px var(--primary-glow);
         }
 
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
+        .btn-happ:hover {
+            background: linear-gradient(135deg, #9d75fa, #8b5cf6);
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+            box-shadow: 0 6px 25px rgba(139, 92, 246, 0.55);
+        }
+
+        .btn-incy {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: #042438;
+            box-shadow: 0 4px 20px var(--incy-glow);
+        }
+
+        .btn-incy:hover {
+            background: linear-gradient(135deg, #22d3ee, #06b6d4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(6, 182, 212, 0.55);
         }
 
         .btn-secondary {
@@ -155,65 +303,339 @@
 
         .btn-secondary:hover {
             background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(139, 92, 246, 0.5);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Разделы / Категории серверов */
+        .categories-card {
+            background: var(--card-bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .categories-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.92rem;
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .category-badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .badge-main { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; }
+        .badge-ru { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+        .badge-bypass { background: rgba(251, 191, 36, 0.15); color: #fde047; }
+
+        /* Копирование ссылки */
+        .copy-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #0d0a14;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin-top: 1rem;
+        }
+
+        .copy-input {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            width: 100%;
+            outline: none;
+            font-family: monospace;
+        }
+
+        .btn-copy-sm {
+            background: var(--card-bg-subtle);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .btn-copy-sm:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Toast уведомление */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #10b981;
+            color: #042f2e;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 1.5rem;
+        }
+
+        .footer a {
+            color: #c4b5fd;
+            text-decoration: none;
+            font-weight: 600;
         }
 
         @media (max-width: 640px) {
+            body {
+                padding: 1.5rem 0.85rem 3rem 0.85rem;
+            }
             .card {
-                padding: 1.5rem;
+                padding: 1.35rem;
+            }
+            .title {
+                font-size: 2rem;
             }
             .step-content {
                 padding-left: 0;
-                margin-top: 1rem;
-            }
-            .step-number {
-                margin-right: 0.75rem;
+                margin-top: 0.6rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Шапка -->
         <div class="header">
-            <img src="https://i.ibb.co/4ZggD9Jz/30650.jpg" alt="ouVPN Logo" class="logo">
+            <div class="logo-wrap">
+                <img src="https://i.ibb.co/4ZggD9Jz/30650.jpg" alt="ouVPN Logo" class="logo">
+                <span class="badge-live">V2 LIVE</span>
+            </div>
             <h1 class="title">ouVPN</h1>
+            <p class="subtitle">Быстрый, проверенный и бесплатный VPN от <a href="https://t.me/oulanGift" target="_blank">@oulanGift</a></p>
         </div>
 
-        <div class="card">
-            <h2 class="instruction-title">Инструкция по подключению</h2>
-            
+        <!-- Переключатель приложений HAPP / INCY -->
+        <div class="tabs-nav">
+            <button class="tab-btn active happ-tab" id="btnTabHapp" onclick="switchTab('happ')">
+                <span>📱</span> HAPP
+            </button>
+            <button class="tab-btn incy-tab" id="btnTabIncy" onclick="switchTab('incy')">
+                <span>⚡</span> INCY
+            </button>
+        </div>
+
+        <!-- Раздел: HAPP -->
+        <div class="card" id="sectionHapp">
+            <div class="app-hero">
+                <div class="app-meta">
+                    <div class="app-icon icon-happ">📱</div>
+                    <div>
+                        <div class="app-title">Подключение через Happ</div>
+                        <div class="app-tag">Android / iOS / Windows / macOS</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">1</div>
-                    <h3 class="step-title">Скачать Happ</h3>
+                    <h3 class="step-title">Установить приложение Happ</h3>
                 </div>
                 <div class="step-content">
-                    <p>Для работы VPN необходимо установить приложение Happ на ваше устройство и послать РКН НАХУЙ.</p>
-                    <a href="https://www.happ.su/main/ru" target="_blank" class="btn btn-secondary">Скачать приложение</a>
+                    <p>Скачайте официальный клиент Happ для вашего устройства.</p>
+                    <a href="https://www.happ.su/" target="_blank" class="btn btn-secondary">📥 Скачать Happ</a>
                 </div>
             </div>
 
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">2</div>
-                    <h3 class="step-title">Добавление подписки</h3>
+                    <h3 class="step-title">Добавить подписку в один клик</h3>
                 </div>
                 <div class="step-content">
-                    <p>Нажмите кнопку ниже — приложение откроется, и подписка добавится автоматически.</p>
-                    <a href="happ://add/https://raw.githubusercontent.com/oulan1/ouVPN/refs/heads/main/ouvpn.txt" class="btn btn-primary">Добавить подписку</a>
+                    <p>Нажмите кнопку ниже — приложение Happ откроется и автоматически импортирует сервера ouVPN.</p>
+                    <a href="happ://add/https://raw.githubusercontent.com/oulan1/ouVPN/refs/heads/main/ouvpn.txt" class="btn btn-happ">
+                        🚀 Добавить подписку в Happ
+                    </a>
                 </div>
             </div>
 
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">3</div>
-                    <h3 class="step-title">Подключение и использование</h3>
+                    <h3 class="step-title">Включение VPN</h3>
                 </div>
                 <div class="step-content">
-                    <p>В главном разделе нажмите большую кнопку включения в центре для подключения к VPN. Не забудьте выбрать сервер в списке серверов. При необходимости выберите другой сервер из списка серверов.</p>
+                    <p>В главном окне Happ выберите любой сервер и нажмите кнопку подключения по центру.</p>
                 </div>
             </div>
         </div>
+
+        <!-- Раздел: INCY -->
+        <div class="card" id="sectionIncy" style="display: none;">
+            <div class="app-hero">
+                <div class="app-meta">
+                    <div class="app-icon icon-incy">⚡</div>
+                    <div>
+                        <div class="app-title">Подключение через Incy</div>
+                        <div class="app-tag">Сверхбыстрый клиент VLESS</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Установить клиент Incy</h3>
+                </div>
+                <div class="step-content">
+                    <p>Установите приложение Incy для вашего смартфона или компьютера.</p>
+                    <a href="https://incy.su/" target="_blank" class="btn btn-secondary">📥 Скачать Incy</a>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Добавить подписку в один клик</h3>
+                </div>
+                <div class="step-content">
+                    <p>Нажмите кнопку ниже — Incy запустится и автоматически загрузит подписку ouVPN.</p>
+                    <a href="incy://add/https://raw.githubusercontent.com/oulan1/ouVPN/refs/heads/main/ouvpn.txt" class="btn btn-incy">
+                        ⚡ Добавить подписку в Incy
+                    </a>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Выбор категории и старт</h3>
+                </div>
+                <div class="step-content">
+                    <p>Выберите подходящий сервер (Европа, Россия или Обход для БС) и активируйте защиту.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка категорий серверов в подписке -->
+        <div class="categories-card">
+            <div class="categories-title">📁 Структура подписки ouVPN</div>
+            <div class="category-item">
+                <span>🇸🇴 <b>ОСНОВНЫЕ СЕРВЕРА</b></span>
+                <span class="category-badge badge-main">Европа и мир (YouTube, Discord, IG)</span>
+            </div>
+            <div class="category-item">
+                <span>🇸🇴 <b>ЮТУБ БЕЗ РЕКЛАМЫ</b></span>
+                <span class="category-badge badge-ru">Российские серверы (RU)</span>
+            </div>
+            <div class="category-item">
+                <span>🇸🇴 <b>ОБХОД ДЛЯ БС</b></span>
+                <span class="category-badge badge-bypass">CIDR / LTE / SNI (обход блокировок)</span>
+            </div>
+        </div>
+
+        <!-- Универсальная ссылка для ручного добавления -->
+        <div class="card" style="padding: 1.5rem;">
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.35rem;">🔗 Ручное добавление подписки</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Если авто-добавление не срабатывает, скопируйте прямую ссылку и вставьте в раздел «Подписки» любого V2Ray-клиента:</p>
+            <div class="copy-box">
+                <input type="text" id="subUrl" class="copy-input" readonly value="https://raw.githubusercontent.com/oulan1/ouVPN/refs/heads/main/ouvpn.txt">
+                <button class="btn-copy-sm" onclick="copySubscription()">Копировать</button>
+            </div>
+        </div>
+
+        <!-- Подвал -->
+        <div class="footer">
+            <p>ouVPN Project &bull; Официальный канал: <a href="https://t.me/oulanGift" target="_blank">@oulanGift</a></p>
+        </div>
     </div>
+
+    <!-- Всплывающее уведомление -->
+    <div id="toast" class="toast">✓ Ссылка подписки скопирована!</div>
+
+    <script>
+        function switchTab(app) {
+            const btnHapp = document.getElementById('btnTabHapp');
+            const btnIncy = document.getElementById('btnTabIncy');
+            const secHapp = document.getElementById('sectionHapp');
+            const secIncy = document.getElementById('sectionIncy');
+
+            if (app === 'happ') {
+                btnHapp.classList.add('active');
+                btnIncy.classList.remove('active');
+                secHapp.style.display = 'block';
+                secIncy.style.display = 'none';
+            } else {
+                btnIncy.classList.add('active');
+                btnHapp.classList.remove('active');
+                secIncy.style.display = 'block';
+                secHapp.style.display = 'none';
+            }
+        }
+
+        function copySubscription() {
+            const input = document.getElementById('subUrl');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(input.value).then(() => {
+                showToast("✓ Ссылка подписки скопирована!");
+            }).catch(() => {
+                document.execCommand('copy');
+                showToast("✓ Ссылка скопирована!");
+            });
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            toast.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
 </body>
 </html>
