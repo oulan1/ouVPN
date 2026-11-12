@@ -61,7 +61,8 @@ PING_TEST_URL_YOUTUBE = "https://www.youtube.com/generate_204"
 # Регулярка для выявления серверов обхода: EU, CIDR, *CIDR, LTE, SNI, Обход (любой регистр)
 BYPASS_RE = re.compile(r'(?i)(\*?cidr|\blte\b|\bsni\b|обход)')
 
-# Заглушки-разделители категорий (с флагом Сомали 🇸🇴)
+# Заглушки-разделители категорий
+DUMMY_CATEGORY_PAID = "vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#" + urllib.parse.quote("💎 ПЛАТНЫЕ СЕРВЕРА")
 DUMMY_CATEGORY_MAIN = "vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%F0%9F%87%B8%F0%9F%87%B4%20%D0%9E%D0%A1%D0%9D%D0%9E%D0%92%D0%9D%D0%AB%D0%95%20%D0%A1%D0%95%D0%A0%D0%92%D0%95%D0%A0%D0%90"
 DUMMY_CATEGORY_RU = "vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%F0%9F%87%B8%F0%9F%87%B4%20%D0%AE%D0%A2%D0%A3%D0%91%20%D0%91%D0%95%D0%97%20%D0%A0%D0%95%D0%9A%D0%9B%D0%90%D0%9C%D0%AB"
 DUMMY_CATEGORY_BYPASS = "vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%F0%9F%87%B8%F0%9F%87%B4%20%D0%9E%D0%91%D0%A5%D0%9E%D0%94%20%D0%94%D0%9B%D0%AF%20%D0%91%D0%A1"
@@ -217,19 +218,23 @@ def extract_flag_and_country(raw_name: str) -> tuple[str | None, str | None]:
 
 class ServerItem:
     """Класс представления одного VPN-сервера (только VLESS)."""
-    def __init__(self, raw_url: str, source_id: int):
+    def __init__(self, raw_url: str, source_id: int, is_paid: bool = False):
         self.raw_url = raw_url
         self.source_id = source_id
         self.scheme = "vless"
+        self.is_paid = is_paid
         
         self.old_name = self._extract_old_name()
         self.flag, self.country_code = extract_flag_and_country(self.old_name)
         
         # Обходы: EU, CIDR, *CIDR, LTE, SNI (в любом регистре) или слово обход
-        self.is_bypass = (self.country_code == "EU" or bool(BYPASS_RE.search(self.old_name)))
-        if self.is_bypass:
-            self.flag = "🇪🇺"
-            self.country_code = "EU"
+        if self.is_paid:
+            self.is_bypass = False
+        else:
+            self.is_bypass = (self.country_code == "EU" or bool(BYPASS_RE.search(self.old_name)))
+            if self.is_bypass:
+                self.flag = "🇪🇺"
+                self.country_code = "EU"
 
         self.eu_num = 0
         
@@ -247,7 +252,12 @@ class ServerItem:
 
     def get_display_name(self) -> str:
         fast_mark = " ⚡" if self.is_fast else ""
-        if self.is_bypass:
+        if self.is_paid:
+            if self.country_code and self.flag:
+                return f"#{self.source_id} | 💎 {self.country_code} {self.flag} ouVPN V2{fast_mark}"
+            else:
+                return f"#{self.source_id} | 💎 ouVPN V2{fast_mark}"
+        elif self.is_bypass:
             num = self.eu_num if self.eu_num > 0 else self.source_id
             return f"#{self.source_id} | 🇪🇺 Обход №{num}{fast_mark}"
         elif self.country_code and self.flag:
@@ -262,6 +272,8 @@ class ServerItem:
         return f"{base_url}#{encoded_name}"
 
     def get_category_priority(self) -> int:
+        if getattr(self, "is_paid", False):
+            return 0
         if self.is_bypass:
             return 4
         if self.country_code == "RU":
@@ -271,10 +283,10 @@ class ServerItem:
         return 2
 
 
-def parse_all_servers(lines: list[str]) -> list[ServerItem]:
+def parse_all_servers(lines: list[str], start_id: int = 1) -> list[ServerItem]:
     """Парсит строки в список объектов ServerItem (ТОЛЬКО VLESS, с дедупликацией)."""
     servers = []
-    source_counter = 0
+    source_counter = start_id - 1
     eu_counter = 0
     seen_bases = set()
 
@@ -294,6 +306,59 @@ def parse_all_servers(lines: list[str]) -> list[ServerItem]:
         if item.is_bypass:
             eu_counter += 1
             item.eu_num = eu_counter
+        servers.append(item)
+
+    return servers
+
+
+def get_paid_servers_path() -> str:
+    """Возвращает путь к файлу с платными серверами."""
+    return os.path.join(get_base_dir(), "paid_servers.txt")
+
+
+def load_paid_servers_text() -> str:
+    """Считывает содержимое paid_servers.txt."""
+    path = get_paid_servers_path()
+    if os.path.exists(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return f.read()
+        except Exception:
+            return ""
+    return ""
+
+
+def save_paid_servers_text(text: str) -> None:
+    """Сохраняет список платных серверов в paid_servers.txt."""
+    path = get_paid_servers_path()
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        cleaned = text.strip()
+        f.write(cleaned + "\n" if cleaned else "")
+
+
+def parse_paid_servers(text_or_lines=None, start_id: int = 1) -> list[ServerItem]:
+    """Парсит платные серверы из paid_servers.txt или переданных строк."""
+    if text_or_lines is None:
+        text_or_lines = load_paid_servers_text()
+    if isinstance(text_or_lines, str):
+        lines = [l.strip() for l in text_or_lines.splitlines() if l.strip()]
+    else:
+        lines = [l.strip() for l in text_or_lines if l.strip()]
+
+    servers = []
+    source_counter = start_id - 1
+    seen_bases = set()
+
+    for line in lines:
+        if line.startswith("#") or not line.startswith("vless://"):
+            continue
+        base = line.split("#", 1)[0].strip()
+        if base in seen_bases:
+            continue
+        seen_bases.add(base)
+
+        source_counter += 1
+        item = ServerItem(line, source_counter, is_paid=True)
         servers.append(item)
 
     return servers
@@ -365,9 +430,11 @@ def convert_item_to_xray_outbound(item: ServerItem, tag: str) -> dict | None:
         return None
 
 
-def _probe_targets(opener, timeout: int) -> tuple[bool, int, str]:
+def _probe_targets(opener, timeout: int, is_bypass: bool = False) -> tuple[bool, int, str]:
     """
-    Проверяет 5 ключевых сервисов: Google, Telegram, Discord, Instagram, YouTube.
+    Проверяет доступность:
+    - Для серверов обхода (is_bypass=True): ТОЛЬКО Google (http://www.gstatic.com/generate_204).
+    - Для обычных серверов: 5 ключевых сервисов: Google, Telegram, Discord, Instagram, YouTube.
     Возвращает (успех, средний_пинг, статус/ошибка).
     """
     # 1. Google
@@ -380,6 +447,10 @@ def _probe_targets(opener, timeout: int) -> tuple[bool, int, str]:
             g_ms = int(round((time.time() - t0) * 1000))
     except Exception:
         return False, 0, "Таймаут (Google)"
+
+    # Для серверов обхода достаточно одной проверки gstatic
+    if is_bypass:
+        return True, g_ms, "OK"
 
     # 2. Telegram
     t1 = time.time()
@@ -524,10 +595,15 @@ def test_servers_ping_xray(
                 proxy_handler,
                 urllib.request.HTTPSHandler(context=ssl_ctx)
             )
-            ok, avg1, err = _probe_targets(opener, timeout)
+            ok, avg1, err = _probe_targets(opener, timeout, is_bypass=srv.is_bypass)
             if ok:
-                round1_results[srv] = (avg1, opener)
-                srv.ping_status = f"Раунд 1: {avg1} ms"
+                if srv.is_bypass:
+                    # Для серверов обхода достаточно одной проверки gstatic (без раунда 2)
+                    srv.ping_ms = avg1
+                    srv.ping_status = f"{avg1} ms"
+                else:
+                    round1_results[srv] = (avg1, opener)
+                    srv.ping_status = f"Раунд 1: {avg1} ms"
             else:
                 srv.ping_ms = None
                 srv.ping_status = err
@@ -552,7 +628,7 @@ def test_servers_ping_xray(
             if stop_event and stop_event.is_set():
                 return
             avg1, opener = round1_results[srv]
-            ok2, avg2, err2 = _probe_targets(opener, timeout)
+            ok2, avg2, err2 = _probe_targets(opener, timeout, is_bypass=srv.is_bypass)
             if ok2:
                 final_avg = int(round((avg1 + avg2) / 2.0))
                 srv.ping_ms = final_avg
@@ -689,15 +765,20 @@ def save_and_push_servers(selected_servers: list[ServerItem], on_status=None, co
     else:
         active_list = sort_servers_by_user_rules(selected_servers)
 
-    # 3. Разделение на 3 категории с заглушками:
+    # 3. Разделение на категории с заглушками:
+    # 0. 💎 ПЛАТНЫЕ СЕРВЕРА (при наличии)
     # 1. 🇸🇴 ОСНОВНЫЕ СЕРВЕРА (Европейские и международные)
     # 2. 🇸🇴 ЮТУБ БЕЗ РЕКЛАМЫ (Россия RU)
     # 3. 🇸🇴 ОБХОД ДЛЯ БС (Обходы EU, CIDR, LTE, SNI)
-    main_servers = [s for s in active_list if not s.is_bypass and s.country_code != "RU"]
-    ru_servers = [s for s in active_list if not s.is_bypass and s.country_code == "RU"]
-    bypass_servers = [s for s in active_list if s.is_bypass]
+    paid_servers = [s for s in active_list if getattr(s, "is_paid", False)]
+    main_servers = [s for s in active_list if not getattr(s, "is_paid", False) and not s.is_bypass and s.country_code != "RU"]
+    ru_servers = [s for s in active_list if not getattr(s, "is_paid", False) and not s.is_bypass and s.country_code == "RU"]
+    bypass_servers = [s for s in active_list if not getattr(s, "is_paid", False) and s.is_bypass]
 
     export_lines = []
+    if paid_servers:
+        export_lines.append(DUMMY_CATEGORY_PAID)
+        export_lines.extend([s.build_export_url() for s in paid_servers])
     if main_servers:
         export_lines.append(DUMMY_CATEGORY_MAIN)
         export_lines.extend([s.build_export_url() for s in main_servers])

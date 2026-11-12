@@ -44,6 +44,14 @@ class OUVPNPanelApp:
         self._setup_styles()
         self._build_ui()
 
+        # Автоматическая загрузка сохраненных ранее платных серверов (при наличии)
+        initial_paid = core_engine.parse_paid_servers(start_id=1)
+        if initial_paid:
+            self.servers = initial_paid
+            self.card_total.configure(text=str(len(initial_paid)))
+            self.populate_table()
+            self.set_status(f"Загружено {len(initial_paid)} платных серверов 💎 из paid_servers.txt.")
+
     def _setup_styles(self):
         self.style = ttk.Style()
         try:
@@ -166,6 +174,23 @@ class OUVPNPanelApp:
             command=self.action_fetch_servers
         )
         self.btn_fetch.pack(side="left", padx=(0, 8))
+
+        # Кнопка: Платные сервера (отдельное окно)
+        self.btn_paid = tk.Button(
+            action_bar,
+            text="💎 Платные сервера",
+            font=("Segoe UI", 9, "bold"),
+            bg="#11293b",
+            fg="#38bdf8",
+            activebackground="#0284c7",
+            activeforeground="#ffffff",
+            bd=0,
+            padx=12,
+            pady=6,
+            cursor="hand2",
+            command=self.action_open_paid_servers_dialog
+        )
+        self.btn_paid.pack(side="left", padx=(0, 8))
 
         # Кнопка: Проверить пинг
         self.btn_ping = tk.Button(
@@ -403,6 +428,11 @@ class OUVPNPanelApp:
 
         # 3. Скоростные (золотой фон)
         self.tree.tag_configure("gold", background=self.c_gold_bg, foreground=self.c_gold_fg)
+
+        # 4. Платные сервера (стильный тёмно-синий фон и небесно-голубой/зеленый текст)
+        self.tree.tag_configure("paid_selected", background="#11293b", foreground="#38bdf8")
+        self.tree.tag_configure("paid_online", background="#11293b", foreground=self.c_green)
+        self.tree.tag_configure("paid_dead", background="#11293b", foreground=self.c_red)
 
         # Скроллбар
         v_scroll = ttk.Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
@@ -647,7 +677,12 @@ class OUVPNPanelApp:
     def _refresh_tree_row(self, item_id, srv: ServerItem):
         sel_text = "  🟣 Выбран [✓]" if srv.selected else "  ⚪ Снят [ ]"
         fast_text = "⚡ Да" if srv.is_fast else "-"
-        country_disp = "Обход" if srv.is_bypass else (srv.country_code or "??")
+        if getattr(srv, "is_paid", False):
+            country_disp = f"💎 {srv.country_code or 'VIP'}"
+        elif srv.is_bypass:
+            country_disp = "Обход"
+        else:
+            country_disp = srv.country_code or "??"
         
         ping_disp = srv.ping_status
         if srv.ping_ms is not None:
@@ -669,6 +704,16 @@ class OUVPNPanelApp:
         # Выбираем визуальный тег
         if srv.is_fast:
             tag = "gold"
+        elif getattr(srv, "is_paid", False):
+            if srv.selected:
+                if srv.ping_ms is not None:
+                    tag = "paid_online"
+                elif srv.ping_status not in ("не проверен", ""):
+                    tag = "paid_dead"
+                else:
+                    tag = "paid_selected"
+            else:
+                tag = "unselected"
         elif srv.selected:
             if srv.ping_ms is not None:
                 tag = "selected_online"
@@ -697,7 +742,12 @@ class OUVPNPanelApp:
             item_id = str(srv.source_id)
             sel_text = "  🟣 Выбран [✓]" if srv.selected else "  ⚪ Снят [ ]"
             fast_text = "⚡ Да" if srv.is_fast else "-"
-            country_disp = "Обход" if srv.is_bypass else (srv.country_code or "??")
+            if getattr(srv, "is_paid", False):
+                country_disp = f"💎 {srv.country_code or 'VIP'}"
+            elif srv.is_bypass:
+                country_disp = "Обход"
+            else:
+                country_disp = srv.country_code or "??"
             
             ping_disp = srv.ping_status
             if srv.ping_ms is not None:
@@ -705,6 +755,16 @@ class OUVPNPanelApp:
 
             if srv.is_fast:
                 tag = "gold"
+            elif getattr(srv, "is_paid", False):
+                if srv.selected:
+                    if srv.ping_ms is not None:
+                        tag = "paid_online"
+                    elif srv.ping_status not in ("не проверен", ""):
+                        tag = "paid_dead"
+                    else:
+                        tag = "paid_selected"
+                else:
+                    tag = "unselected"
             elif srv.selected:
                 if srv.ping_ms is not None:
                     tag = "selected_online"
@@ -736,7 +796,7 @@ class OUVPNPanelApp:
     # ----------------- Кнопки и действия -----------------
 
     def action_fetch_servers(self):
-        """Загрузка свежих серверов из источника (ТОЛЬКО VLESS)."""
+        """Загрузка свежих серверов из источника (ТОЛЬКО VLESS) + платные сервера."""
         self.set_status("Загрузка VLESS конфигов из источника...")
         self.btn_fetch.configure(state="disabled")
 
@@ -744,14 +804,21 @@ class OUVPNPanelApp:
             try:
                 lines = core_engine.fetch_source_configs()
                 meta = core_engine.parse_source_metadata(lines)
-                servers = core_engine.parse_all_servers(lines)
+                
+                # Загружаем платные сервера (наверх списка)
+                paid_servers = core_engine.parse_paid_servers(start_id=1)
+                
+                # Парсим публичные сервера
+                public_servers = core_engine.parse_all_servers(lines, start_id=len(paid_servers) + 1)
+                all_servers = paid_servers + public_servers
 
                 def on_done():
-                    self.servers = servers
-                    self.card_total.configure(text=str(len(servers)))
+                    self.servers = all_servers
+                    self.card_total.configure(text=str(len(all_servers)))
                     self.card_updated.configure(text=meta.get("source_update_time", "Недавно"))
                     self.populate_table()
-                    self.set_status(f"Успешно загружено {len(servers)} VLESS серверов (все выбраны фиолетовым).")
+                    paid_note = f" (из них {len(paid_servers)} платных 💎)" if paid_servers else ""
+                    self.set_status(f"Успешно загружено {len(all_servers)} VLESS серверов{paid_note}.")
                     self.btn_fetch.configure(state="normal")
 
                 self.root.after(0, on_done)
@@ -763,6 +830,150 @@ class OUVPNPanelApp:
                 self.root.after(0, on_err)
 
         threading.Thread(target=worker, daemon=True).start()
+
+    def action_open_paid_servers_dialog(self):
+        """Открывает диалоговое окно для ввода и редактирования платных серверов."""
+        dlg = tk.Toplevel(self.root)
+        dlg.title("💎 Платные сервера ouVPN")
+        dlg.geometry("750x550")
+        dlg.minsize(650, 420)
+        dlg.configure(bg=self.c_bg)
+        dlg.transient(self.root)
+        dlg.grab_set()
+
+        # Шапка диалога
+        head_frame = tk.Frame(dlg, bg=self.c_card, padx=15, pady=12)
+        head_frame.configure(highlightbackground=self.c_card_border, highlightthickness=1)
+        head_frame.pack(fill="x", padx=12, pady=10)
+
+        lbl_t = tk.Label(
+            head_frame,
+            text="💎 Управление платными серверами (VLESS)",
+            font=("Segoe UI", 13, "bold"),
+            bg=self.c_card,
+            fg="#38bdf8"
+        )
+        lbl_t.pack(anchor="w")
+
+        lbl_d = tk.Label(
+            head_frame,
+            text="Вставьте VLESS ссылки на ваши платные сервера (по одной на строку).\n"
+                 "Они будут сохранены в файл paid_servers.txt и помечены как отдельная категория 💎 ПЛАТНЫЕ СЕРВЕРА\n"
+                 "на самом верху списка и вашей подписки.",
+            font=("Segoe UI", 9),
+            bg=self.c_card,
+            fg=self.c_muted,
+            justify="left"
+        )
+        lbl_d.pack(anchor="w", pady=(4, 0))
+
+        # Текстовое поле скроллируемое
+        text_frame = tk.Frame(dlg, bg=self.c_bg, padx=12)
+        text_frame.pack(fill="both", expand=True, pady=(0, 10))
+
+        txt_scroll = ttk.Scrollbar(text_frame, orient="vertical")
+        txt_editor = tk.Text(
+            text_frame,
+            font=("Consolas", 10),
+            bg="#15121c",
+            fg="#f8fafc",
+            insertbackground="#38bdf8",
+            selectbackground="#0284c7",
+            selectforeground="#ffffff",
+            bd=1,
+            relief="solid",
+            wrap="none",
+            yscrollcommand=txt_scroll.set
+        )
+        txt_scroll.configure(command=txt_editor.yview)
+        txt_editor.pack(side="left", fill="both", expand=True)
+        txt_scroll.pack(side="right", fill="y")
+
+        # Загружаем текущие сохранённые платные сервера
+        saved_text = core_engine.load_paid_servers_text()
+        if saved_text:
+            txt_editor.insert("1.0", saved_text)
+
+        # Кнопки управления
+        btn_frame = tk.Frame(dlg, bg=self.c_bg, padx=12, pady=10)
+        btn_frame.pack(fill="x")
+
+        def on_save():
+            content = txt_editor.get("1.0", "end").strip()
+            core_engine.save_paid_servers_text(content)
+
+            # Парсим новые платные сервера
+            new_paid = core_engine.parse_paid_servers(content, start_id=1)
+            
+            # Сохраняем обычные сервера
+            existing_public = [s for s in self.servers if not getattr(s, "is_paid", False)]
+            
+            # Пересчитываем ID для порядка
+            curr_id = 1
+            for s in new_paid:
+                s.source_id = curr_id
+                curr_id += 1
+            for s in existing_public:
+                s.source_id = curr_id
+                curr_id += 1
+
+            self.servers = new_paid + existing_public
+            self.populate_table()
+            self.update_selected_count()
+            self.card_total.configure(text=str(len(self.servers)))
+
+            count_paid = len(new_paid)
+            self.set_status(f"Сохранено {count_paid} платных серверов 💎. Размещены на самом верху.")
+            messagebox.showinfo("Сохранено", f"Успешно сохранено {count_paid} платных серверов!\nОни помечены категорией 💎 и закреплены наверху.")
+            dlg.destroy()
+
+        def on_clear():
+            if messagebox.askyesno("Очистить", "Удалить все введённые платные сервера из поля?"):
+                txt_editor.delete("1.0", "end")
+
+        btn_save = tk.Button(
+            btn_frame,
+            text="💾 Сохранить и применить",
+            font=("Segoe UI", 9, "bold"),
+            bg="#0284c7",
+            fg="#ffffff",
+            activebackground="#0369a1",
+            bd=0,
+            padx=14,
+            pady=6,
+            cursor="hand2",
+            command=on_save
+        )
+        btn_save.pack(side="left", padx=(0, 8))
+
+        btn_clear = tk.Button(
+            btn_frame,
+            text="🧹 Очистить",
+            font=("Segoe UI", 9),
+            bg="#221c30",
+            fg=self.c_muted,
+            activebackground="#312647",
+            bd=0,
+            padx=10,
+            pady=6,
+            cursor="hand2",
+            command=on_clear
+        )
+        btn_clear.pack(side="left", padx=(0, 8))
+
+        btn_cancel = tk.Button(
+            btn_frame,
+            text="❌ Закрыть",
+            font=("Segoe UI", 9),
+            bg="#1f2937",
+            fg=self.c_text,
+            bd=0,
+            padx=12,
+            pady=6,
+            cursor="hand2",
+            command=dlg.destroy
+        )
+        btn_cancel.pack(side="right")
 
     def action_test_ping(self):
         """Запуск проверки пинга через Xray HTTP GET generate_204."""
@@ -913,13 +1124,20 @@ class OUVPNPanelApp:
             messagebox.showwarning("Ничего не выбрано", "Пожалуйста, выберите хотя бы один сервер (фиолетовый фон).")
             return
 
+        paid_count = sum(1 for s in selected if getattr(s, "is_paid", False))
+        paid_line = f"1. 💎 ПЛАТНЫЕ СЕРВЕРА ({paid_count} шт.)\n" if paid_count > 0 else ""
+        c1 = "2" if paid_count else "1"
+        c2 = "3" if paid_count else "2"
+        c3 = "4" if paid_count else "3"
+
         confirm = messagebox.askyesno(
             "Подтверждение публикации",
             f"Будет сохранено и отправлено на GitHub серверов: {len(selected)} шт.\n\n"
-            f"Категории в ouvpn.txt с заглушками 🇸🇴:\n"
-            f"1. 🇸🇴 ОСНОВНЫЕ СЕРВЕРА (Европа и весь мир)\n"
-            f"2. 🇸🇴 ЮТУБ БЕЗ РЕКЛАМЫ (Россия RU)\n"
-            f"3. 🇸🇴 ОБХОД ДЛЯ БС (CIDR, LTE, SNI, EU)\n\n"
+            f"Категории в ouvpn.txt с заглушками:\n"
+            f"{paid_line}"
+            f"{c1}. 🇸🇴 ОСНОВНЫЕ СЕРВЕРА (Европа и весь мир)\n"
+            f"{c2}. 🇸🇴 ЮТУБ БЕЗ РЕКЛАМЫ (Россия RU)\n"
+            f"{c3}. 🇸🇴 ОБХОД ДЛЯ БС (CIDR, LTE, SNI, EU)\n\n"
             f"После публикации все снятые сервера будут скрыты из панели,\n"
             f"останутся только эти {len(selected)} выбранных серверов.\n\n"
             f"Продолжить отправку на GitHub?"
