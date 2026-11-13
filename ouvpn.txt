@@ -1,18 +1,21 @@
 # profile-title: ouVPN V2
 # profile-update-interval: 1
 #subscription-userinfo: download=0; total=0;
-# Date/Time: 2026-11-12 / 19:39 (Moscow)
-# Количество: 7
+# Date/Time: 2026-11-13 / 19:05 (Moscow)
+# Количество: 8
 # profile-web-page-url: https://oulan1.github.io/ouVPN/
 # support-url: https://t.me/oulanGift
-# announce: Обновлено: 2026-11-12 19:39 (МСК)
+# announce: Обновлено: 2026-11-13 19:05 (МСК)
 
 
 vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%F0%9F%87%B8%F0%9F%87%B4%20%D0%9E%D0%A1%D0%9D%D0%9E%D0%92%D0%9D%D0%AB%D0%95%20%D0%A1%D0%95%D0%A0%D0%92%D0%95%D0%A0%D0%90
-vless://3d7c1ba4-64bd-4883-a698-352805c973a6@b5f498g.pl5.h1clayd.click:443?type=grpc&security=reality&serviceName=ec9aec0aa54f&sni=b5f498g.pl5.h1clayd.click&fp=firefox&pbk=YLaJKaZezacG7yB0CMtBEsAVvyihWqMDNzFHXuLoMHs&sid=8db2a8668662be70&spx=%2F&encryption=none#%2337%20|%20DE%20🇩🇪%20ouVPN%20V2
-vless://f1c3915d-7be6-4449-976e-bd48742eeec1@fr.vip-get.ru:8443?encryption=none&type=ws&security=tls&sni=fr.vip-get.ru&path=/api/download#%2349%20|%20FR%20🇫🇷%20ouVPN%20V2
-vless://cda0862a-0f87-4be9-8ed8-1d0c9e382839@961ec0g.nl13.h1clayd.click:443?encryption=none&fp=&pbk=xn7KVKS5MOnsFrYrEeRS04JssBCOxh12rxegaDFyGkA&security=reality&serviceName=7d5abcd7d8a1&sid=6d289ff0f47c0aac&sni=961ec0g.nl13.h1clayd.click&type=grpc#%2361%20|%20US%20🇺🇸%20ouVPN%20V2
-vless://4201786b-d99b-4147-a5f0-20d47acddb81@195.206.235.202:443?encryption=none&flow=xtls-rprx-vision&pbk=MzgB17ZFbKqs8pbC3EscTzHid_ENc-k_Cp6nXl-2knw&security=reality&sid=6976d670818644cc&sni=4935e4t.de25.h1clayd.click&type=tcp&fp=edge#%2388%20|%20NL%20🇳🇱%20ouVPN%20V2
-vless://4201786b-d99b-4147-a5f0-20d47acddb81@38917fx.es1.h1clayd.click:443?encryption=none&mode=auto&path=%2F&pbk=4mgkA2kT_Im0rkGi-fVSUU5CyF5xvMVcjA6MXBSEDAA&security=reality&sid=d5501b156391e01d&sni=38917fx.es1.h1clayd.click&spx=%2F&type=xhttp&fp=ios#%23274%20|%20ES%20🇪🇸%20ouVPN%20V2
-vless://4201786b-d99b-4147-a5f0-20d47acddb81@38917fx.es1.h1clayd.click:443?encryption=none&mode=auto&path=%2F&pbk=4mgkA2kT_Im0rkGi-fVSUU5CyF5xvMVcjA6MXBSEDAA&security=reality&sid=d5501b156391e01d&sni=38917fx.es1.h1clayd.click&spx=%2F&type=xhttp&fp=qq#%23275%20|%20ES%20🇪🇸%20ouVPN%20V2
-vless://4201786b-d99b-4147-a5f0-20d47acddb81@38917fx.es1.h1clayd.click:443?type=xhttp&headerType=none&security=reality&encryption=none&sni=38917fx.es1.h1clayd.click&fp=edge&pbk=4mgkA2kT_Im0rkGi-fVSUU5CyF5xvMVcjA6MXBSEDAA&sid=d5501b156391e01d&path=%2F&mode=auto#%23276%20|%20ES%20🇪🇸%20ouVPN%20V2
+vless://cdf4bc13-31e6-4bff-962c-05fe9151c593@78.140.253.25:445?encryption=none&flow=xtls-rprx-vision&fp=firefox&pbk=Vi1Rr8Qf0-OeeXyHCt8Hsz1yRzVRkniPweoKl3Y6ohY&security=reality&sid=15aa18f121da1f81&sni=bel.vrsvpn.com&type=tcp#%2343%20|%20BY%20🇧🇾%20ouVPN%20V2
+vless://e19046d8-3d28-4428-bd85-af88f7fceb3e@87.120.252.16:443?security=reality&encryption=none&pbk=6dc3iKXilOQpA_JFrKlk5-CsFjSmOm_5p0kSQcO9qi4&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=blog.worldoftanks.eu#%2349%20|%20US%20🇺🇸%20ouVPN%20V2
+vless://d9274255-edf4-4944-bc62-6ef35cd2de40@194.87.109.106:443?encryption=none&type=tcp&security=tls&sni=currant.asynchronous.site&fp=firefox&alpn=h2%2Chttp%2F1.1#%23107%20|%20CH%20🇨🇭%20ouVPN%20V2
+vless://cda0862a-0f87-4be9-8ed8-1d0c9e382839@45.133.151.171:443?mode=gun&pbk=cO3wYHISTeorXcM8ffaDCDdqZ-olBQL-GyZqb-W7rTk&security=reality&serviceName=99f2107b03f8&sid=bd8f712209a9c283&sni=0592efg.us8.h1clayd.click&type=grpc&fp=ios#%23261%20|%20US%20🇺🇸%20ouVPN%20V2
+vless://84be02cf-c5c5-4b33-ba26-31b5f8320033@n1.topingr.ir:443?security=tls&type=ws&path=%2Fapi%2Fv3%2Fpulse&host=cdn2.zovip2.ir&packetEncoding=xudp&alpn=http%2F1.1&sni=cdn2.zovip2.ir&fp=chrome&encryption=none#%231032%20|%20LV%20🇱🇻%20ouVPN%20V2%20⚡
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%F0%9F%87%B8%F0%9F%87%B4%20%D0%AE%D0%A2%D0%A3%D0%91%20%D0%91%D0%95%D0%97%20%D0%A0%D0%95%D0%9A%D0%9B%D0%90%D0%9C%D0%AB
+vless://820fa845-a1eb-4a83-b613-e6714cea8a1a@ivory.filnex.baby:443?encryption=none&type=ws&security=tls&sni=ivory.filnex.baby&fp=firefox&alpn=http%2F1.1&path=%2Fapi%2Fde4%2Fstream&host=ivory.filnex.baby#%2370%20|%20RU%20🇷🇺%20ouVPN%20V2
+vless://820fa845-a1eb-4a83-b613-e6714cea8a1a@amber.filnex.baby:443?encryption=none&type=ws&path=%2Fapi%2Fde3%2Fstream&host=amber.filnex.baby&security=tls&sni=amber.filnex.baby&alpn=http%2F1.1&fp=firefox#%2379%20|%20RU%20🇷🇺%20ouVPN%20V2
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:443?encryption=none&security=none&type=tcp#%F0%9F%87%B8%F0%9F%87%B4%20%D0%9E%D0%91%D0%A5%D0%9E%D0%94%20%D0%94%D0%9B%D0%AF%20%D0%91%D0%A1
+vless://f656c4b9-54dc-44cc-a142-e242ce687e56@78.159.250.83:443?flow=xtls-rprx-vision&security=tls&sni=dualarrow.net&alpn=http%2F1.1&fp=firefox#%2314%20|%20🇪🇺%20Обход%20№11%20⚡
