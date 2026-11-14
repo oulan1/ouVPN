@@ -895,50 +895,176 @@ class OUVPNPanelApp:
         threading.Thread(target=worker, daemon=True).start()
 
     def action_open_paid_servers_dialog(self):
-        """Открывает диалоговое окно для ввода и редактирования платных серверов."""
+        """Открывает полноразмерное диалоговое окно для ввода и редактирования платных серверов."""
         dlg = tk.Toplevel(self.root)
-        dlg.title("💎 Платные сервера ouVPN")
-        dlg.geometry("780x570")
-        dlg.minsize(680, 440)
+        dlg.title("💎 Платные сервера ouVPN (VLESS)")
+        dlg.geometry("980x680")
+        dlg.minsize(700, 480)
+        dlg.resizable(True, True)
         dlg.configure(bg=self.c_bg)
-        dlg.transient(self.root)
+        # Не вызываем dlg.transient(self.root), чтобы на Windows оставалась стандартная кнопка максимизации (🗖)
         dlg.grab_set()
 
-        # Шапка диалога
-        head_frame = tk.Frame(dlg, bg=self.c_card, padx=15, pady=12)
+        # 1. Шапка диалога
+        head_frame = tk.Frame(dlg, bg=self.c_card, padx=15, pady=10)
         head_frame.configure(highlightbackground=self.c_card_border, highlightthickness=1)
-        head_frame.pack(fill="x", padx=12, pady=10)
+        head_frame.pack(fill="x", padx=12, pady=(10, 8))
+
+        head_top = tk.Frame(head_frame, bg=self.c_card)
+        head_top.pack(fill="x")
 
         lbl_t = tk.Label(
-            head_frame,
+            head_top,
             text="💎 Управление платными серверами (VLESS)",
             font=("Segoe UI", 13, "bold"),
             bg=self.c_card,
             fg="#38bdf8"
         )
-        lbl_t.pack(anchor="w")
+        lbl_t.pack(side="left", anchor="w")
+
+        # Кнопка разворачивания во весь экран
+        def toggle_maximize():
+            if dlg.state() == "zoomed":
+                dlg.state("normal")
+                btn_max.configure(text="🗖 Во весь экран")
+            else:
+                dlg.state("zoomed")
+                btn_max.configure(text="🗗 Свернуть в окно")
+
+        btn_max = tk.Button(
+            head_top,
+            text="🗖 Во весь экран",
+            font=("Segoe UI", 8, "bold"),
+            bg="#1e293b",
+            fg="#94a3b8",
+            activebackground="#334155",
+            activeforeground="#ffffff",
+            bd=0,
+            padx=10,
+            pady=3,
+            cursor="hand2",
+            command=toggle_maximize
+        )
+        btn_max.pack(side="right")
+
+        # Живой счетчик серверов
+        lbl_stats = tk.Label(
+            head_top,
+            text="📊 Загрузка...",
+            font=("Segoe UI", 9, "bold"),
+            bg=self.c_card,
+            fg="#6ee7b7"
+        )
+        lbl_stats.pack(side="right", padx=(0, 15))
 
         lbl_d = tk.Label(
             head_frame,
             text="Вставьте VLESS ссылки на ваши платные сервера (по одной на строку).\n"
-                 "Они будут сохранены в файл paid_servers.txt и помечены как отдельная категория 💎 ПЛАТНЫЕ СЕРВЕРА\n"
-                 "на самом верху списка и вашей подписки.\n"
-                 "💡 Вставка работает через Ctrl+V (в любой раскладке), правой кнопкой мыши или кнопкой «Вставить».",
-            font=("Segoe UI", 9),
+                 "Они сохраняются в paid_servers.txt и публикуются отдельной категорией 💎 ПЛАТНЫЕ СЕРВЕРА на самом верху списка.\n"
+                 "💡 Листайте текст колёсиком мыши (Shift+Колёсико — по горизонтали). Поддерживается Ctrl+V в любой раскладке.",
+            font=("Segoe UI", 8),
             bg=self.c_card,
             fg=self.c_muted,
             justify="left"
         )
         lbl_d.pack(anchor="w", pady=(4, 0))
 
-        # Текстовое поле скроллируемое
-        text_frame = tk.Frame(dlg, bg=self.c_bg, padx=12)
-        text_frame.pack(fill="both", expand=True, pady=(0, 10))
+        # 1.5. Панель быстрых инструментов просмотра (Перенос строк, масштаб шрифта)
+        tools_frame = tk.Frame(dlg, bg=self.c_bg, padx=12)
+        tools_frame.pack(fill="x", pady=(0, 6))
 
-        txt_scroll = ttk.Scrollbar(text_frame, orient="vertical")
+        # Текущий размер шрифта и состояние переноса строк
+        font_state = {"size": 10, "wrap": False}
+
+        def apply_font():
+            txt_editor.configure(font=("Consolas", font_state["size"]))
+
+        def font_zoom_in():
+            if font_state["size"] < 18:
+                font_state["size"] += 1
+                apply_font()
+
+        def font_zoom_out():
+            if font_state["size"] > 8:
+                font_state["size"] -= 1
+                apply_font()
+
+        def toggle_wrap():
+            font_state["wrap"] = not font_state["wrap"]
+            if font_state["wrap"]:
+                txt_editor.configure(wrap="char")
+                btn_wrap.configure(text="↩️ Перенос строк: ВКЛ (по ширине окна)", bg="#1e3a5f", fg="#38bdf8")
+                h_scroll.grid_remove()
+            else:
+                txt_editor.configure(wrap="none")
+                btn_wrap.configure(text="➡️ Перенос строк: ВЫКЛ (длинные строки)", bg="#221c30", fg=self.c_muted)
+                h_scroll.grid()
+
+        btn_wrap = tk.Button(
+            tools_frame,
+            text="➡️ Перенос строк: ВЫКЛ (длинные строки)",
+            font=("Segoe UI", 8, "bold"),
+            bg="#221c30",
+            fg=self.c_muted,
+            activebackground="#312647",
+            activeforeground="#ffffff",
+            bd=0,
+            padx=10,
+            pady=3,
+            cursor="hand2",
+            command=toggle_wrap
+        )
+        btn_wrap.pack(side="left", padx=(0, 8))
+
+        lbl_font = tk.Label(tools_frame, text="Шрифт:", font=("Segoe UI", 8), bg=self.c_bg, fg=self.c_muted)
+        lbl_font.pack(side="left", padx=(6, 4))
+
+        btn_font_plus = tk.Button(
+            tools_frame,
+            text="A +",
+            font=("Segoe UI", 8, "bold"),
+            bg="#221c30",
+            fg="#c4b5fd",
+            bd=0,
+            padx=8,
+            pady=3,
+            cursor="hand2",
+            command=font_zoom_in
+        )
+        btn_font_plus.pack(side="left", padx=(0, 4))
+
+        btn_font_minus = tk.Button(
+            tools_frame,
+            text="A -",
+            font=("Segoe UI", 8, "bold"),
+            bg="#221c30",
+            fg="#c4b5fd",
+            bd=0,
+            padx=8,
+            pady=3,
+            cursor="hand2",
+            command=font_zoom_out
+        )
+        btn_font_minus.pack(side="left", padx=(0, 15))
+
+        lbl_scroll_hint = tk.Label(
+            tools_frame,
+            text="↔️ Прокрутка: Колёсико мыши (по вертикали) | Shift + Колёсико (по горизонтали)",
+            font=("Segoe UI", 8),
+            bg=self.c_bg,
+            fg="#64748b"
+        )
+        lbl_scroll_hint.pack(side="left")
+
+        # 2. Текстовое поле скроллируемое (Grid с вертикальной и горизонтальной полосами прокрутки)
+        text_container = tk.Frame(dlg, bg=self.c_bg, padx=12)
+        text_container.pack(fill="both", expand=True, pady=(0, 8))
+        text_container.grid_rowconfigure(0, weight=1)
+        text_container.grid_columnconfigure(0, weight=1)
+
         txt_editor = tk.Text(
-            text_frame,
-            font=("Consolas", 10),
+            text_container,
+            font=("Consolas", font_state["size"]),
             bg="#15121c",
             fg="#f8fafc",
             insertbackground="#38bdf8",
@@ -948,11 +1074,16 @@ class OUVPNPanelApp:
             relief="solid",
             wrap="none",
             undo=True,
-            yscrollcommand=txt_scroll.set
+            padx=10,
+            pady=10
         )
-        txt_scroll.configure(command=txt_editor.yview)
-        txt_editor.pack(side="left", fill="both", expand=True)
-        txt_scroll.pack(side="right", fill="y")
+        v_scroll = ttk.Scrollbar(text_container, orient="vertical", command=txt_editor.yview)
+        h_scroll = ttk.Scrollbar(text_container, orient="horizontal", command=txt_editor.xview)
+        txt_editor.configure(yscrollcommand=v_scroll.set, xscrollcommand=h_scroll.set)
+
+        txt_editor.grid(row=0, column=0, sticky="nsew")
+        v_scroll.grid(row=0, column=1, sticky="ns")
+        h_scroll.grid(row=1, column=0, sticky="ew")
 
         # Загружаем текущие сохранённые платные сервера
         saved_text = core_engine.load_paid_servers_text()
@@ -961,6 +1092,31 @@ class OUVPNPanelApp:
 
         # Фокус на текстовом редакторе
         txt_editor.focus_set()
+
+        # Функция обновления статистики строк
+        def update_stats(*args):
+            try:
+                content = txt_editor.get("1.0", "end")
+                lines = [l.strip() for l in content.splitlines() if l.strip()]
+                vless_count = sum(1 for l in lines if l.startswith("vless://"))
+                lbl_stats.configure(
+                    text=f"📊 Найдено VLESS: {vless_count} шт. | Всего строк: {len(lines)}"
+                )
+            except Exception:
+                pass
+
+        update_stats()
+        txt_editor.bind("<KeyRelease>", update_stats)
+
+        # Горизонтальная прокрутка через Shift + Колесико мыши
+        def on_shift_mousewheel(event):
+            try:
+                txt_editor.xview_scroll(int(-1 * (event.delta / 120)), "units")
+                return "break"
+            except Exception:
+                pass
+
+        txt_editor.bind("<Shift-MouseWheel>", on_shift_mousewheel)
 
         # Функции работы с буфером обмена
         def do_paste(event=None):
@@ -972,6 +1128,7 @@ class OUVPNPanelApp:
                     pass
                 txt_editor.insert("insert", text)
                 txt_editor.see("insert")
+                update_stats()
             return "break"
 
         def do_copy(event=None):
@@ -989,6 +1146,7 @@ class OUVPNPanelApp:
                 if sel:
                     set_clipboard_text(dlg, sel)
                     txt_editor.delete("sel.first", "sel.last")
+                    update_stats()
             except tk.TclError:
                 pass
             return "break"
@@ -1045,6 +1203,9 @@ class OUVPNPanelApp:
         txt_editor.bind("<KeyPress>", handle_key_code)
         dlg.bind("<KeyPress>", handle_key_code)
 
+        # F11 для разворачивания во весь экран
+        dlg.bind("<F11>", lambda e: toggle_maximize())
+
         # Контекстное меню по правой кнопке мыши (ПКМ)
         context_menu = tk.Menu(
             txt_editor,
@@ -1060,7 +1221,7 @@ class OUVPNPanelApp:
         context_menu.add_command(label="✂️ Вырезать (Ctrl+X)", command=do_cut)
         context_menu.add_separator()
         context_menu.add_command(label="🔘 Выделить всё (Ctrl+A)", command=do_select_all)
-        context_menu.add_command(label="🧹 Очистить всё", command=lambda: txt_editor.delete("1.0", "end"))
+        context_menu.add_command(label="🧹 Очистить всё", command=lambda: (txt_editor.delete("1.0", "end"), update_stats()))
 
         def popup_context_menu(event):
             try:
@@ -1071,7 +1232,7 @@ class OUVPNPanelApp:
 
         txt_editor.bind("<Button-3>", popup_context_menu)
 
-        # Кнопки управления
+        # 3. Кнопки управления внизу
         btn_frame = tk.Frame(dlg, bg=self.c_bg, padx=12, pady=10)
         btn_frame.pack(fill="x")
 
@@ -1107,6 +1268,7 @@ class OUVPNPanelApp:
         def on_clear():
             if messagebox.askyesno("Очистить", "Удалить все введённые платные сервера из поля?"):
                 txt_editor.delete("1.0", "end")
+                update_stats()
 
         btn_save = tk.Button(
             btn_frame,
@@ -1116,8 +1278,8 @@ class OUVPNPanelApp:
             fg="#ffffff",
             activebackground="#0369a1",
             bd=0,
-            padx=14,
-            pady=6,
+            padx=16,
+            pady=7,
             cursor="hand2",
             command=on_save
         )
@@ -1132,8 +1294,8 @@ class OUVPNPanelApp:
             activebackground="#0369a1",
             activeforeground="#ffffff",
             bd=0,
-            padx=12,
-            pady=6,
+            padx=14,
+            pady=7,
             cursor="hand2",
             command=do_paste
         )
@@ -1147,8 +1309,8 @@ class OUVPNPanelApp:
             fg=self.c_muted,
             activebackground="#312647",
             bd=0,
-            padx=10,
-            pady=6,
+            padx=12,
+            pady=7,
             cursor="hand2",
             command=on_clear
         )
@@ -1161,8 +1323,8 @@ class OUVPNPanelApp:
             bg="#1f2937",
             fg=self.c_text,
             bd=0,
-            padx=12,
-            pady=6,
+            padx=14,
+            pady=7,
             cursor="hand2",
             command=dlg.destroy
         )
