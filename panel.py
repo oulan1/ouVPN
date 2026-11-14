@@ -22,6 +22,53 @@ import core_engine
 from core_engine import ServerItem
 
 
+def get_clipboard_text(widget=None) -> str:
+    """Извлекает текст из буфера обмена (с поддержкой Tkinter и прямого Windows API)."""
+    text = ""
+    if widget:
+        try:
+            text = widget.clipboard_get()
+            if text:
+                return text
+        except Exception:
+            pass
+
+    if sys.platform == "win32":
+        try:
+            import ctypes
+            user32 = ctypes.windll.user32
+            kernel32 = ctypes.windll.kernel32
+            user32.GetClipboardData.restype = ctypes.c_void_p
+            user32.GetClipboardData.argtypes = [ctypes.c_uint]
+            kernel32.GlobalLock.restype = ctypes.c_void_p
+            kernel32.GlobalLock.argtypes = [ctypes.c_void_p]
+            kernel32.GlobalUnlock.argtypes = [ctypes.c_void_p]
+
+            if user32.OpenClipboard(None):
+                try:
+                    h = user32.GetClipboardData(13)  # CF_UNICODETEXT
+                    if h:
+                        p = kernel32.GlobalLock(h)
+                        if p:
+                            text = ctypes.c_wchar_p(p).value or ""
+                            kernel32.GlobalUnlock(h)
+                finally:
+                    user32.CloseClipboard()
+        except Exception:
+            pass
+
+    return text
+
+
+def set_clipboard_text(widget, text: str):
+    """Помещает текст в буфер обмена."""
+    try:
+        widget.clipboard_clear()
+        widget.clipboard_append(text)
+    except Exception:
+        pass
+
+
 class OUVPNPanelApp:
     def __init__(self, root: tk.Tk):
         self.root = root
@@ -43,6 +90,7 @@ class OUVPNPanelApp:
 
         self._setup_styles()
         self._build_ui()
+        self._setup_global_keyboard_shortcuts()
 
         # Автоматическая загрузка сохраненных ранее платных серверов (при наличии)
         initial_paid = core_engine.parse_paid_servers(start_id=1)
@@ -51,6 +99,21 @@ class OUVPNPanelApp:
             self.card_total.configure(text=str(len(initial_paid)))
             self.populate_table()
             self.set_status(f"Загружено {len(initial_paid)} платных серверов 💎 из paid_servers.txt.")
+
+    def _setup_global_keyboard_shortcuts(self):
+        """Обеспечивает работу Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+A при русской раскладке клавиатуры."""
+        for widget_class in ("Entry", "Text", "TEntry"):
+            try:
+                self.root.bind_class(widget_class, "<Control-KeyPress-Cyrillic_em>", lambda e: (e.widget.event_generate("<<Paste>>"), "break")[1])
+                self.root.bind_class(widget_class, "<Control-KeyPress-Cyrillic_EM>", lambda e: (e.widget.event_generate("<<Paste>>"), "break")[1])
+                self.root.bind_class(widget_class, "<Control-KeyPress-Cyrillic_es>", lambda e: (e.widget.event_generate("<<Copy>>"), "break")[1])
+                self.root.bind_class(widget_class, "<Control-KeyPress-Cyrillic_ES>", lambda e: (e.widget.event_generate("<<Copy>>"), "break")[1])
+                self.root.bind_class(widget_class, "<Control-KeyPress-Cyrillic_che>", lambda e: (e.widget.event_generate("<<Cut>>"), "break")[1])
+                self.root.bind_class(widget_class, "<Control-KeyPress-Cyrillic_CHE>", lambda e: (e.widget.event_generate("<<Cut>>"), "break")[1])
+                self.root.bind_class(widget_class, "<Control-KeyPress-Cyrillic_ef>", lambda e: (e.widget.event_generate("<<SelectAll>>"), "break")[1])
+                self.root.bind_class(widget_class, "<Control-KeyPress-Cyrillic_EF>", lambda e: (e.widget.event_generate("<<SelectAll>>"), "break")[1])
+            except Exception:
+                pass
 
     def _setup_styles(self):
         self.style = ttk.Style()
@@ -835,8 +898,8 @@ class OUVPNPanelApp:
         """Открывает диалоговое окно для ввода и редактирования платных серверов."""
         dlg = tk.Toplevel(self.root)
         dlg.title("💎 Платные сервера ouVPN")
-        dlg.geometry("750x550")
-        dlg.minsize(650, 420)
+        dlg.geometry("780x570")
+        dlg.minsize(680, 440)
         dlg.configure(bg=self.c_bg)
         dlg.transient(self.root)
         dlg.grab_set()
@@ -859,7 +922,8 @@ class OUVPNPanelApp:
             head_frame,
             text="Вставьте VLESS ссылки на ваши платные сервера (по одной на строку).\n"
                  "Они будут сохранены в файл paid_servers.txt и помечены как отдельная категория 💎 ПЛАТНЫЕ СЕРВЕРА\n"
-                 "на самом верху списка и вашей подписки.",
+                 "на самом верху списка и вашей подписки.\n"
+                 "💡 Вставка работает через Ctrl+V (в любой раскладке), правой кнопкой мыши или кнопкой «Вставить».",
             font=("Segoe UI", 9),
             bg=self.c_card,
             fg=self.c_muted,
@@ -883,6 +947,7 @@ class OUVPNPanelApp:
             bd=1,
             relief="solid",
             wrap="none",
+            undo=True,
             yscrollcommand=txt_scroll.set
         )
         txt_scroll.configure(command=txt_editor.yview)
@@ -893,6 +958,118 @@ class OUVPNPanelApp:
         saved_text = core_engine.load_paid_servers_text()
         if saved_text:
             txt_editor.insert("1.0", saved_text)
+
+        # Фокус на текстовом редакторе
+        txt_editor.focus_set()
+
+        # Функции работы с буфером обмена
+        def do_paste(event=None):
+            text = get_clipboard_text(dlg)
+            if text:
+                try:
+                    txt_editor.delete("sel.first", "sel.last")
+                except tk.TclError:
+                    pass
+                txt_editor.insert("insert", text)
+                txt_editor.see("insert")
+            return "break"
+
+        def do_copy(event=None):
+            try:
+                sel = txt_editor.get("sel.first", "sel.last")
+                if sel:
+                    set_clipboard_text(dlg, sel)
+            except tk.TclError:
+                pass
+            return "break"
+
+        def do_cut(event=None):
+            try:
+                sel = txt_editor.get("sel.first", "sel.last")
+                if sel:
+                    set_clipboard_text(dlg, sel)
+                    txt_editor.delete("sel.first", "sel.last")
+            except tk.TclError:
+                pass
+            return "break"
+
+        def do_select_all(event=None):
+            txt_editor.tag_add("sel", "1.0", "end")
+            txt_editor.mark_set("insert", "end")
+            return "break"
+
+        # Привязка горячих клавиш (латиница + кириллица)
+        for seq in (
+            "<Control-v>", "<Control-V>",
+            "<Control-KeyPress-Cyrillic_em>", "<Control-KeyPress-Cyrillic_EM>",
+            "<Shift-Insert>"
+        ):
+            txt_editor.bind(seq, do_paste)
+            dlg.bind(seq, do_paste)
+
+        for seq in (
+            "<Control-c>", "<Control-C>",
+            "<Control-KeyPress-Cyrillic_es>", "<Control-KeyPress-Cyrillic_ES>",
+            "<Control-Insert>"
+        ):
+            txt_editor.bind(seq, do_copy)
+            dlg.bind(seq, do_copy)
+
+        for seq in (
+            "<Control-x>", "<Control-X>",
+            "<Control-KeyPress-Cyrillic_che>", "<Control-KeyPress-Cyrillic_CHE>",
+            "<Shift-Delete>"
+        ):
+            txt_editor.bind(seq, do_cut)
+            dlg.bind(seq, do_cut)
+
+        for seq in (
+            "<Control-a>", "<Control-A>",
+            "<Control-KeyPress-Cyrillic_ef>", "<Control-KeyPress-Cyrillic_EF>"
+        ):
+            txt_editor.bind(seq, do_select_all)
+            dlg.bind(seq, do_select_all)
+
+        # Обработка аппаратных кодов клавиш Windows (физические клавиши V, C, X, A в любой раскладке)
+        def handle_key_code(event):
+            if event.state & 4:  # Control нажат
+                if event.keycode == 86:    # Физическая клавиша V / М
+                    return do_paste()
+                elif event.keycode == 67:  # Физическая клавиша C / С
+                    return do_copy()
+                elif event.keycode == 88:  # Физическая клавиша X / Ч
+                    return do_cut()
+                elif event.keycode == 65:  # Физическая клавиша A / Ф
+                    return do_select_all()
+
+        txt_editor.bind("<KeyPress>", handle_key_code)
+        dlg.bind("<KeyPress>", handle_key_code)
+
+        # Контекстное меню по правой кнопке мыши (ПКМ)
+        context_menu = tk.Menu(
+            txt_editor,
+            tearoff=0,
+            bg="#1f182c",
+            fg="#f8fafc",
+            activebackground="#0284c7",
+            activeforeground="#ffffff",
+            bd=1
+        )
+        context_menu.add_command(label="📋 Вставить (Ctrl+V)", command=do_paste)
+        context_menu.add_command(label="📑 Копировать (Ctrl+C)", command=do_copy)
+        context_menu.add_command(label="✂️ Вырезать (Ctrl+X)", command=do_cut)
+        context_menu.add_separator()
+        context_menu.add_command(label="🔘 Выделить всё (Ctrl+A)", command=do_select_all)
+        context_menu.add_command(label="🧹 Очистить всё", command=lambda: txt_editor.delete("1.0", "end"))
+
+        def popup_context_menu(event):
+            try:
+                context_menu.tk_popup(event.x_root, event.y_root)
+            finally:
+                context_menu.grab_release()
+            return "break"
+
+        txt_editor.bind("<Button-3>", popup_context_menu)
 
         # Кнопки управления
         btn_frame = tk.Frame(dlg, bg=self.c_bg, padx=12, pady=10)
@@ -945,6 +1122,22 @@ class OUVPNPanelApp:
             command=on_save
         )
         btn_save.pack(side="left", padx=(0, 8))
+
+        btn_paste = tk.Button(
+            btn_frame,
+            text="📋 Вставить из буфера",
+            font=("Segoe UI", 9, "bold"),
+            bg="#1e293b",
+            fg="#38bdf8",
+            activebackground="#0369a1",
+            activeforeground="#ffffff",
+            bd=0,
+            padx=12,
+            pady=6,
+            cursor="hand2",
+            command=do_paste
+        )
+        btn_paste.pack(side="left", padx=(0, 8))
 
         btn_clear = tk.Button(
             btn_frame,
